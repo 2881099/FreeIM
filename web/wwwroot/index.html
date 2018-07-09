@@ -1,0 +1,161 @@
+﻿
+<html>
+<head>
+	<title>websocket 简易例子</title>
+	<script src="http://code.jquery.com/jquery-1.12.4.min.js"></script>
+	<script src="https://vuejs.org/js/vue.min.js"></script>
+</head>
+
+<body>
+
+	<div id="app">
+
+		<h1>id: {{id}}，昵称：<a href="#" @click="changeNick();return false;">{{nick||'&lt;未设置&gt;'}}</a></h1>
+		<hr>
+
+		<h1>聊天室 <input type="button" value="创建聊天室" @click="createChannel" /></h1>
+		<div v-for="c in channels">
+			<input type="button" :value="'加入 ' + c + ' 聊天室'" @click="joinChannel(c)" />
+		</div>
+		
+		<hr>
+		<div v-if="currentChannel.chan">
+			<h1>{{currentChannel.chan}}</h1>
+			<div v-for="msg in currentChannel.msgs" style="margin-bottom:9px;">
+				<div v-if="msg.msg.type == 'welcome'">欢迎 {{msg.senderNick||msg.sender}} 加入</div>
+				<div v-else-if="msg.msg.type == 'changenick'">{{msg.msg.oldnick||msg.sender}} 改名为 {{msg.msg.newnick||msg.sender}}</div>
+				<div v-else>
+					<div style="color:#aaa;">{{msg.senderNick||msg.sender}} {{new Date(msg.time)}}</div>
+					<div>{{msg.msg.content}}</div>
+				</div>
+			</div>
+			<input type="text" style="width:300px;" v-model="inputChannelMsg.content" />
+			<input type="button" value="发送" @click="if(!inputChannelMsg.content)return alert('请输入内容'); sendChannelMsg(inputChannelMsg);inputChannelMsg.content=''" />
+		</div>
+
+	</div>
+
+
+	<script>
+	var gsocket = null;
+	var gsocketTimeId = null;
+
+	new Vue({
+		data: {
+			id: null,
+			nick: null,
+			channels: [],
+			currentChannel: { chan: '', msgs: [] },
+			inputChannelMsg: { type: 'text', content: '' }
+		},
+		created: function() {
+			this.connectWebsocket();
+		},
+		methods: {
+			connectWebsocket() {
+				var _self = this;
+				if (top != window) return;
+				var data = { };
+				//_self.id = localStorage.getItem('websocketid');
+				if (_self.id != '' && _self.id) data.websocketId = _self.id;
+				ajax('/ws/pre-connect', data, function(d) {
+					if (!(_self.id != '' && _self.id)) _self.id = d.websocketId; //localStorage.setItem('websocketid', _self.id = d.websocketId); //存储本地重复使用
+					var url = d.server;
+					if (gsocket) gsocket.close();
+					gsocket = null;
+					gsocket = new WebSocket(url);
+					gsocket.onopen = function (e) {
+						console.log('websocket connect');
+						_self.getChannels();
+					};
+					gsocket.onclose = function (e) {
+						console.log('websocket disconnect');
+						gsocket = null;
+						clearTimeout(gsocketTimeId);
+						gsocketTimeId = setTimeout(function () {
+							_self.connectWebsocket.call(_self, chan);
+						}, 5000);
+					};
+					gsocket.onmessage = function (e) {
+						try {
+							var msg = JSON.parse(e.data);
+							_self.onmessage.call(_self, msg);
+						} catch (e) {
+							console.log(e);
+							return;
+						}
+					};
+					gsocket.onerror = function (e) {
+						console.log('websocket error');
+						gsocket = null;
+						clearTimeout(gsocketTimeId);
+						gsocketTimeId = setTimeout(function () {
+							_self.connectWebsocket.call(_self, chan);
+						}, 5000);
+					};
+				}, function (err) {
+					alert(err.message || err);
+				})
+			},
+			onmessage: function(msg) {
+				var _self = this;
+				msg = JSON.parse(msg);
+				if (msg.type == 'chanmsg') { //群聊天消息
+					_self.currentChannel.msgs.push(msg);
+				}
+			},
+			getChannels: function() {
+				var _self = this;
+				ajax('/ws/get-channels', {}, function(rt) {
+					_self.channels = rt.channels;
+				});
+			},
+			joinChannel: function(chan) {
+				var _self = this;
+				ajax('/ws/subscr-channel', { websocketid: _self.id, channel: chan }, function(rt) {
+					_self.currentChannel.chan = chan;
+					_self.currentChannel.msgs.splice(0, _self.currentChannel.msgs.length);
+					_self.sendChannelMsg({ type: 'welcome' });
+				});
+			},
+			createChannel: function() {
+				var chan = prompt('请输入聊天室名称，若存在则直接进入');
+				if (chan) this.joinChannel(chan);
+			},
+			sendChannelMsg: function(msg) {
+				if (!this.currentChannel.chan) return alert('请加入一个聊天群');
+				var _self = this;
+				var data = { type: 'chanmsg', sender: _self.id, senderNick: _self.nick, chan: _self.currentChannel.chan, time: new Date().getTime(), msg: msg,  };
+				ajax('/ws/send-channelmsg', { channel: _self.currentChannel.chan, message: JSON.stringify(data) }, function(rt) {
+					
+				});
+			},
+			changeNick: function() {
+				var _self = this;
+				var newnick = prompt('设置昵称', _self.nick||'')
+				if (_self.nick != newnick) {
+					debugger
+					_self.sendChannelMsg({ type: 'changenick', oldnick: _self.nick, newnick: newnick });
+					_self.nick = newnick;
+				}
+			}
+		}
+	}).$mount('#app')
+
+	function ajax(url, data, callback) {
+		$.ajax({
+			type : "POST",
+			url : url,
+			data: data,
+			dataType : "json",
+			beforeSend: function (request) {
+			},
+			success : function(data) {
+				callback(data);
+			}
+		});
+	}
+	</script>
+
+</body>
+</html>
