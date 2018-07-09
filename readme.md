@@ -26,7 +26,7 @@
 
 im系统一般涉及【我的好友】、【我的群】、【历史消息】等等。。
 
-那么，imServer与web该保持何种关系呢？
+那么，imServer与业务方(web)该保持何种关系呢？
 
 用户A向好友B发送消息，分析一下：
 
@@ -67,4 +67,4 @@ im系统一般涉及【我的好友】、【我的群】、【历史消息】等
 * imServer3 订阅 redisChanne3
 * imServer4 订阅 redisChanne4
 
-web端根据接收方的id的hash分区算法，定位到对应的redisChannel，这样publish就可以将消息定位到相应的imServer了
+业务方(web)端根据接收方的id的hash分区算法，定位到对应的redisChannel，这样publish就可以将消息定位到相应的imServer了
