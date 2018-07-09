@@ -18,9 +18,9 @@
 
 ### socket选型
 
-最二的办法是浏览器端使用websocket，其他端socket，这么混乱的设计导致最终非常难维护。
+最二的办法是浏览器端使用websocket，其他端socket，这么混乱的设计最终将非常难维护。
 
-所以强烈建议所有端都使用websocket协议，adorid/ios/h5/小程序全部支持客户端。
+所以强烈建议所有端都使用websocket协议，adorid/ios/h5/小程序全部支持websocket客户端。
 
 ### 业务与通讯协议
 
