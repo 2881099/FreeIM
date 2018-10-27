@@ -4,7 +4,7 @@
 		<WarningLevel>3</WarningLevel>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="CSRedisCore" Version="2.6.12" />
+		<PackageReference Include="CSRedisCore" Version="3.0.13" />
 		<PackageReference Include="Microsoft.Extensions.Configuration" Version="2.1.1" />
 		<PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="3.0.0" />

@@ -47,7 +47,7 @@ namespace imServer {
 					_websockets.Add(data.uid, list = new List<WebSocketHandler>());
 				list.Add(sh);
 			}
-			await RedisHelper.HashIncrementAsync("online", data.uid, 1);
+			await RedisHelper.HIncrByAsync("online", data.uid, 1);
 
 			var buffer = new byte[BufferSize];
 			var seg = new ArraySegment<byte>(buffer);

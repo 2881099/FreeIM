@@ -17,12 +17,7 @@ namespace imServer {
 			this.env = env;
 
 			//单redis节点模式，如需开启集群负载，请将注释去掉并做相应配置
-			RedisHelper.Initialization(
-				csredis: new CSRedis.CSRedisClient(//null,
-					//Configuration["ConnectionStrings:redis2"],
-					Configuration["ConnectionStrings:redis1"]),
-				serialize: value => Newtonsoft.Json.JsonConvert.SerializeObject(value),
-				deserialize: (data, type) => Newtonsoft.Json.JsonConvert.DeserializeObject(data, type));
+			RedisHelper.Initialization(new CSRedis.CSRedisClient(Configuration["ConnectionStrings:redis1"]));
 		}
 
 		public IConfiguration Configuration { get; }

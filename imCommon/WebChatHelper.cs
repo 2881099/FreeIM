@@ -81,11 +81,11 @@ public static class WebChatHelper {
 		return chans.Select(a => a.Substring(a.IndexOf("WebChatSubscribe") + 16)).ToArray();
 	}
 	public static void Subscribe(Guid websocketId, string channel) {
-		RedisHelper.HashSet($"WebChatSubscribe{channel}", websocketId, 0);
+		RedisHelper.HSet($"WebChatSubscribe{channel}", websocketId.ToString(), 0);
 	}
 
 	public static void Publish(string channel, object message) {
-		var websocketIds = RedisHelper.HashKeys($"WebChatSubscribe{channel}");
+		var websocketIds = RedisHelper.HKeys($"WebChatSubscribe{channel}");
 		var offline = new List<string>();
 		var span = websocketIds.AsSpan();
 		var start = span.Length;
@@ -97,7 +97,7 @@ public static class WebChatHelper {
 				start = 0;
 			}
 			var slice = span.Slice(start, length);
-			var hvals = RedisHelper.HashMGet("online", slice.ToArray().Select(b => b.ToString()).ToArray());
+			var hvals = RedisHelper.HMGet("online", slice.ToArray().Select(b => b.ToString()).ToArray());
 			for (var a = length - 1; a>=0; a--) {
 				if (string.IsNullOrEmpty(hvals[a])) {
 					offline.Add(span[start + a]);
@@ -106,7 +106,7 @@ public static class WebChatHelper {
 			}
 		}
 		//删除离线订阅
-		if (offline.Any()) RedisHelper.HashDelete($"WebChatSubscribe{channel}", offline.ToArray());
+		if (offline.Any()) RedisHelper.HDel($"WebChatSubscribe{channel}", offline.ToArray());
 		SendMsg(Guid.Empty, websocketIds.Where(a => !string.IsNullOrEmpty(a)).Select(a => Guid.TryParse(a, out var tryuuid) ? tryuuid : Guid.Empty).ToArray(), message);
 	}
 }
