@@ -26,6 +26,14 @@ imServer 订阅了相应的频道，收到消息，指派 websocket 向客户端
 
 2、可解决连接数过多的问题；
 
+客户端连接流程：client -> websocket -> imserver
+
+imserver 订阅消息：client <- imserver <- redis channel
+
+推送消息流程：web1 -> sendmsg方法 -> redis channel -> imserver
+
+imserver 充当消息转发，及维护连接中心，代码万年不变不需要重启维护；
+
 ### socket选型
 
 最二的办法是浏览器端使用websocket，其他端socket，这么混乱的设计最终将非常难维护。
