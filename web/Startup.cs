@@ -6,46 +6,47 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Text;
 
-namespace web {
-	public class Startup {
-		public Startup(IHostingEnvironment env) {
-			var builder = new ConfigurationBuilder()
-				 .SetBasePath(env.ContentRootPath)
-				 .AddJsonFile("appsettings.json", true, true);
+namespace web
+{
 
-			this.Configuration = builder.AddEnvironmentVariables().Build();
-			this.env = env;
+    public class Startup
+    {
 
-			//单redis节点模式，如需开启集群负载，请将注释去掉并做相应配置
-			RedisHelper.Initialization(new CSRedis.CSRedisClient(Configuration["ConnectionStrings:redis1"]));
-		}
-		public IConfiguration Configuration { get; }
-		public IHostingEnvironment env { get; set; }
-		
-		public void ConfigureServices(IServiceCollection services) {
-			services.AddSingleton<IConfiguration>(Configuration);
-			services.AddSingleton<IHostingEnvironment>(env);
+        public Startup(IConfiguration configuration)
+        {
+            this.Configuration = configuration;
+        }
 
-			services.AddMvc();
-			services.AddSwaggerGen();
-		}
-		
-		public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory) {
-			Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-			Console.OutputEncoding = Encoding.GetEncoding("GB2312");
-			Console.InputEncoding = Encoding.GetEncoding("GB2312");
+        public IConfiguration Configuration { get; }
 
-			loggerFactory.AddConsole(Configuration.GetSection("Logging"));
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddMvc();
+            services.AddSwaggerGen();
+        }
 
-			if (env.IsDevelopment())
-				app.UseDeveloperExceptionPage();
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        {
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            Console.OutputEncoding = Encoding.GetEncoding("GB2312");
+            Console.InputEncoding = Encoding.GetEncoding("GB2312");
+            loggerFactory.AddConsole(LogLevel.Error);
 
-			WebChatHelper.Configuration = Configuration;
+            if (env.IsDevelopment())
+                app.UseDeveloperExceptionPage();
 
-			app.UseDefaultFiles();
-			app.UseStaticFiles();
-			app.UseMvc();
-			app.UseSwagger().UseSwaggerUI();
-		}
-	}
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
+            app.UseMvc();
+            app.UseSwagger().UseSwaggerUI();
+
+            ImHelper.Initialization(new ImClientOptions
+            {
+                Redis = new CSRedis.CSRedisClient("127.0.0.1:6379,poolsize=5"),
+                Servers = new[] { "127.0.0.1:6001" }
+            });
+
+            ImHelper.EventBus(t => Console.WriteLine(t.clientId + "上线了"), t => Console.WriteLine(t.clientId + "下线了"));
+        }
+    }
 }

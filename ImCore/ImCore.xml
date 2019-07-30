@@ -1,0 +1,245 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ImCore</name>
+    </assembly>
+    <members>
+        <member name="T:ImClientOptions">
+            <summary>
+            im 核心类实现的配置所需
+            </summary>
+        </member>
+        <member name="P:ImClientOptions.Redis">
+            <summary>
+            CSRedis 对象，用于存储数据和发送消息
+            </summary>
+        </member>
+        <member name="P:ImClientOptions.Servers">
+            <summary>
+            负载的服务端
+            </summary>
+        </member>
+        <member name="P:ImClientOptions.PathMatch">
+            <summary>
+            websocket请求的路径，默认值：/ws
+            </summary>
+        </member>
+        <member name="T:ImClient">
+            <summary>
+            im 核心类实现
+            </summary>
+        </member>
+        <member name="M:ImClient.#ctor(ImClientOptions)">
+            <summary>
+            初始化 imclient
+            </summary>
+            <param name="options"></param>
+        </member>
+        <member name="M:ImClient.SelectServer(System.Guid)">
+            <summary>
+            负载分区规则：取clientId后四位字符，转成10进制数字0-255，求模
+            </summary>
+            <param name="clientId">客户端id</param>
+            <returns></returns>
+        </member>
+        <member name="M:ImClient.PrevConnectServer(System.Guid,System.String)">
+            <summary>
+            ImServer 连接前的负载、授权，返回 ws 目标地址，使用该地址连接 websocket 服务端
+            </summary>
+            <param name="clientId">客户端id</param>
+            <param name="clientMetaData">客户端相关信息，比如ip</param>
+            <returns>websocket 地址：ws://xxxx/ws?token=xxx</returns>
+        </member>
+        <member name="M:ImClient.SendMessage(System.Guid,System.Guid[],System.Object,System.Boolean)">
+            <summary>
+            向指定的多个客户端id发送消息
+            </summary>
+            <param name="senderClientId">发送者的客户端id</param>
+            <param name="receiveClientId">接收者的客户端id</param>
+            <param name="message">消息</param>
+            <param name="receipt">是否回执</param>
+        </member>
+        <member name="M:ImClient.GetClientListByOnline">
+            <summary>
+            获取所在线客户端id
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ImClient.EventBus(System.Action{System.ValueTuple{System.Guid,System.String}},System.Action{System.ValueTuple{System.Guid,System.String}})">
+            <summary>
+            事件订阅
+            </summary>
+            <param name="online">上线</param>
+            <param name="offline">下线</param>
+        </member>
+        <member name="M:ImClient.JoinChan(System.Guid,System.String)">
+            <summary>
+            加入群聊频道，每次上线都必须重新加入
+            </summary>
+            <param name="clientId">客户端id</param>
+            <param name="chan">群聊频道名</param>
+        </member>
+        <member name="M:ImClient.LeaveChan(System.Guid,System.String[])">
+            <summary>
+            离开群聊频道
+            </summary>
+            <param name="clientId">客户端id</param>
+            <param name="chans">群聊频道名</param>
+        </member>
+        <member name="M:ImClient.GetChanClientList(System.String)">
+            <summary>
+            获取群聊频道所有客户端id（测试）
+            </summary>
+            <param name="chan">群聊频道名</param>
+            <returns></returns>
+        </member>
+        <member name="M:ImClient.ClearChanClient(System.String)">
+            <summary>
+            清理群聊频道的离线客户端（测试）
+            </summary>
+            <param name="chan">群聊频道名</param>
+        </member>
+        <member name="M:ImClient.GetChanList">
+            <summary>
+            获取所有群聊频道和在线人数
+            </summary>
+            <returns>频道名和在线人数</returns>
+        </member>
+        <member name="M:ImClient.GetChanListByClientId(System.Guid)">
+            <summary>
+            获取用户参与的所有群聊频道
+            </summary>
+            <param name="clientId">客户端id</param>
+            <returns></returns>
+        </member>
+        <member name="M:ImClient.GetChanOnline(System.String)">
+            <summary>
+            获取群聊频道的在线人数
+            </summary>
+            <param name="chan">群聊频道名</param>
+            <returns>在线人数</returns>
+        </member>
+        <member name="M:ImClient.SendChanMessage(System.Guid,System.String,System.Object)">
+            <summary>
+            发送群聊消息，所有在线的用户将收到消息
+            </summary>
+            <param name="senderClientId">发送者的客户端id</param>
+            <param name="chan">群聊频道名</param>
+            <param name="message">消息</param>
+        </member>
+        <member name="T:ImHelper">
+            <summary>
+            im 核心类实现的静态代理类
+            </summary>
+        </member>
+        <member name="M:ImHelper.Initialization(ImClientOptions)">
+            <summary>
+            初始化 ImHelper
+            </summary>
+            <param name="options"></param>
+        </member>
+        <member name="M:ImHelper.PrevConnectServer(System.Guid,System.String)">
+            <summary>
+            ImServer 连接前的负载、授权，返回 ws 目标地址，使用该地址连接 websocket 服务端
+            </summary>
+            <param name="clientId">客户端id</param>
+            <param name="clientMetaData">客户端相关信息，比如ip</param>
+            <returns>websocket 地址：ws://xxxx/ws?token=xxx</returns>
+        </member>
+        <member name="M:ImHelper.SendMessage(System.Guid,System.Guid[],System.Object,System.Boolean)">
+            <summary>
+            向指定的多个客户端id发送消息
+            </summary>
+            <param name="senderClientId">发送者的客户端id</param>
+            <param name="receiveClientId">接收者的客户端id</param>
+            <param name="message">消息</param>
+            <param name="receipt">是否回执</param>
+        </member>
+        <member name="M:ImHelper.GetClientListByOnline">
+            <summary>
+            获取所在线客户端id
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ImHelper.EventBus(System.Action{System.ValueTuple{System.Guid,System.String}},System.Action{System.ValueTuple{System.Guid,System.String}})">
+            <summary>
+            事件订阅
+            </summary>
+            <param name="online">上线</param>
+            <param name="offline">下线</param>
+        </member>
+        <member name="M:ImHelper.JoinChan(System.Guid,System.String)">
+            <summary>
+            加入群聊频道，每次上线都必须重新加入
+            </summary>
+            <param name="clientId">客户端id</param>
+            <param name="chan">群聊频道名</param>
+        </member>
+        <member name="M:ImHelper.LeaveChan(System.Guid,System.String[])">
+            <summary>
+            离开群聊频道
+            </summary>
+            <param name="clientId">客户端id</param>
+            <param name="chans">群聊频道名</param>
+        </member>
+        <member name="M:ImHelper.GetChanClientList(System.String)">
+            <summary>
+            获取群聊频道所有客户端id（测试）
+            </summary>
+            <param name="chan">群聊频道名</param>
+            <returns></returns>
+        </member>
+        <member name="M:ImHelper.ClearChanClient(System.String)">
+            <summary>
+            清理群聊频道的离线客户端（测试）
+            </summary>
+            <param name="chan">群聊频道名</param>
+        </member>
+        <member name="M:ImHelper.GetChanList">
+            <summary>
+            获取所有群聊频道和在线人数
+            </summary>
+            <returns>频道名和在线人数</returns>
+        </member>
+        <member name="M:ImHelper.GetChanListByClientId(System.Guid)">
+            <summary>
+            获取用户参与的所有群聊频道
+            </summary>
+            <param name="clientId">客户端id</param>
+            <returns></returns>
+        </member>
+        <member name="M:ImHelper.GetChanOnline(System.String)">
+            <summary>
+            获取群聊频道的在线人数
+            </summary>
+            <param name="chan">群聊频道名</param>
+            <returns>在线人数</returns>
+        </member>
+        <member name="M:ImHelper.SendChanMessage(System.Guid,System.String,System.Object)">
+            <summary>
+            发送群聊消息，所有在线的用户将收到消息
+            </summary>
+            <param name="senderClientId">发送者的客户端id</param>
+            <param name="chan">群聊频道名</param>
+            <param name="message">消息</param>
+        </member>
+        <member name="M:ImServerExtenssions.UseImServer(Microsoft.AspNetCore.Builder.IApplicationBuilder,ImServerOptions)">
+            <summary>
+            启用 ImServer 服务端
+            </summary>
+            <param name="app"></param>
+            <param name="options"></param>
+            <returns></returns>
+        </member>
+        <member name="T:ImServerOptions">
+            <summary>
+            im 核心类实现的配置所需
+            </summary>
+        </member>
+        <member name="P:ImServerOptions.Server">
+            <summary>
+            设置服务名称，它应该是 servers 内的一个
+            </summary>
+        </member>
+    </members>
+</doc>

@@ -6,44 +6,37 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Text;
 
-namespace imServer {
-	public class Startup {
-		public Startup(IHostingEnvironment env) {
-			var builder = new ConfigurationBuilder()
-				 .SetBasePath(env.ContentRootPath)
-				 .AddJsonFile("appsettings.json", true, true);
+namespace imServer
+{
 
-			this.Configuration = builder.AddEnvironmentVariables().Build();
-			this.env = env;
+    public class Startup
+    {
 
-			//单redis节点模式，如需开启集群负载，请将注释去掉并做相应配置
-			RedisHelper.Initialization(new CSRedis.CSRedisClient(Configuration["ConnectionStrings:redis1"]));
-		}
+        public Startup()
+        {
 
-		public IConfiguration Configuration { get; }
-		public IHostingEnvironment env { get; set; }
-		
-		public void ConfigureServices(IServiceCollection services) {
-			services.AddSingleton<IConfiguration>(Configuration);
-			services.AddSingleton<IHostingEnvironment>(env);
-		}
-		
-		public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory) {
-			Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-			Console.OutputEncoding = Encoding.GetEncoding("GB2312");
-			Console.InputEncoding = Encoding.GetEncoding("GB2312");
+        }
 
-			loggerFactory.AddConsole(Configuration.GetSection("Logging"));
+        public void ConfigureServices(IServiceCollection services)
+        {
 
-			if (env.IsDevelopment())
-				app.UseDeveloperExceptionPage();
+        }
 
-			WebChatHelper.Configuration = Configuration;
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        {
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            Console.OutputEncoding = Encoding.GetEncoding("GB2312");
+            Console.InputEncoding = Encoding.GetEncoding("GB2312");
 
-			app.UseDefaultFiles();
-			app.UseStaticFiles();
+            if (env.IsDevelopment())
+                app.UseDeveloperExceptionPage();
 
-			app.Map("/ws", WebSocketHandler.Map);
-		}
-	}
+            app.UseImServer(new ImServerOptions
+            {
+                Redis = new CSRedis.CSRedisClient("127.0.0.1:6379,poolsize=5"),
+                Servers = new[] { "127.0.0.1:6001" },
+                Server = "127.0.0.1:6001"
+            });
+        }
+    }
 }
