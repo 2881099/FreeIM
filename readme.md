@@ -98,7 +98,9 @@ imserver 充当消息转发，及维护连接中心，代码万年不变不需�
 
 比较笨的办法是浏览器端使用websocket，其他端socket，这种混乱的设计非常难维护。
 
-强烈建议所有端都使用websocket协议，adorid/ios/h5/小程序全部支持websocket客户端。
+强烈建议所有端都使用websocket协议，websocket协议支持几乎所有端，adorid/ios/h5/小程序全部支持websocket客户端。
+
+websocket用了后，就像跨平台。。。虽然选一种语言都能连接通讯。
 
 ## 业务与通讯协议
 
