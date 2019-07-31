@@ -51,7 +51,7 @@ public class ImClient
     }
 
     /// <summary>
-    /// 负载分区规则：取clientId后四位字符，转成10进制数字0-255，求模
+    /// 负载分区规则：取clientId后四位字符，转成10进制数字0-65535，求模
     /// </summary>
     /// <param name="clientId">客户端id</param>
     /// <returns></returns>
