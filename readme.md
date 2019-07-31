@@ -162,3 +162,11 @@ IM 系统比较常用的有上线、下线，在 imServer 层才能准确捕捉�
 采用 redis 发布订阅技术，将上线、下线等事件向指定频道发布，业务方(webApi) 通过 ImHelper.EventBus 方法进行订阅捕捉。
 
 ![image](https://user-images.githubusercontent.com/16286519/62150466-a46e3980-b330-11e9-86f3-d050160f0913.png)
+
+## A向B发文件的例子
+
+1、A向webapi传文件
+2、webapi告诉imServer，A向B正在传文件
+3、B收到消息，A正在传文件
+4、webapi文件接收完成时告诉imServer，A向B文件传输完毕
+5、B收到消息，A文件传输完成（含文件链接）
