@@ -20,6 +20,8 @@ public void Configure(IApplicationBuilder app)
 
 ### Docker
 ```shell
+docker pull movingsam/imcore
+
 docker run \
 -e "ImServerOption:Servers=118.25.209.177:6000;118.25.209.177:6001;118.25.209.177:6002" \
 -e "ImServerOption:Server=118.25.209.177:6000" \
@@ -27,7 +29,7 @@ docker run \
 -e "ASPNETCORE_URLS=http://+:6002" \
 -p 6002:6002 \
 -d \
-imserver
+imcore
 ```
 
 ### WebApi业务端

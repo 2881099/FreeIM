@@ -87,15 +87,7 @@ namespace web.Controllers
         [HttpPost("send-msg")]
         public object sendmsg([FromForm] Guid senderWebsocketId, [FromForm] Guid receiveWebsocketId, [FromForm] string message, [FromForm] bool isReceipt = false)
         {
-            var loginUser = 发送者;
-            var recieveUser = User.Get(receiveWebsocketId);
-
-            if (loginUser.好友 != recieveUser) throw new Exception("不是好友");
-
             ImHelper.SendMessage(senderWebsocketId, new[] { receiveWebsocketId }, message, isReceipt);
-
-            loginUser.保存记录(message);
-            recieveUser.保存记录(message);
 
             return new
             {
