@@ -8,7 +8,7 @@
 ```csharp
 public void Configure(IApplicationBuilder app)
 {
-    app.UseimServer(new imServerOptions
+    app.UseImServer(new imServerOptions
     {
         Redis = new CSRedis.CSRedisClient("127.0.0.1:6379,poolsize=5"),
         Servers = new[] { "127.0.0.1:6001" }, //集群配置
@@ -16,7 +16,19 @@ public void Configure(IApplicationBuilder app)
     });
 }
 ```
-> 一套永远不需要迭代更新的IM服务端
+> 一套永远不需要迭代更新的IM服务端，ImServer 支持 .NetStandard 2.0
+
+### Docker
+```shell
+docker run \
+-e "ImServerOption:Servers=118.25.209.177:6000;118.25.209.177:6001;118.25.209.177:6002" \
+-e "ImServerOption:Server=118.25.209.177:6000" \
+-e "ImServerOption:CSRedisClient=118.25.209.177:26379,poolsize=5" \
+-e "ASPNETCORE_URLS=http://+:6002" \
+-p 6002:6002 \
+-d \
+imserver
+```
 
 ### WebApi业务端
 ```csharp
@@ -56,6 +68,8 @@ public void Configure(IApplicationBuilder app)
 
 - clientId 应该与 webApi 的用户id相同，或者有关联；
 - 频道适用临时的群聊需求，如：聊天室、即时讨论区；
+
+> ImHelper 支持 .NetFramework 4.5+、.NetStandard 2.0
 
 ### Html5终端
 
