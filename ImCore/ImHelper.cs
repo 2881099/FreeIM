@@ -33,14 +33,14 @@ public static class ImHelper
     /// <param name="receiveClientId">接收者的客户端id</param>
     /// <param name="message">消息</param>
     /// <param name="receipt">是否回执</param>
-    public static void SendMessage(Guid senderClientId, Guid[] receiveClientId, object message, bool receipt = false) =>
+    public static void SendMessage(Guid senderClientId, IEnumerable<Guid> receiveClientId, object message, bool receipt = false) =>
         Instance.SendMessage(senderClientId, receiveClientId, message, receipt);
 
     /// <summary>
     /// 获取所在线客户端id
     /// </summary>
     /// <returns></returns>
-    public static string[] GetClientListByOnline() => Instance.GetClientListByOnline();
+    public static IEnumerable<Guid> GetClientListByOnline() => Instance.GetClientListByOnline();
 
     /// <summary>
     /// 事件订阅

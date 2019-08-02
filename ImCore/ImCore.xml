@@ -24,9 +24,39 @@
             websocket请求的路径，默认值：/ws
             </summary>
         </member>
+        <member name="P:ImSendEventArgs.SenderClientId">
+            <summary>
+            发送者的客户端id
+            </summary>
+        </member>
+        <member name="P:ImSendEventArgs.ReceiveClientId">
+            <summary>
+            接收者的客户端id
+            </summary>
+        </member>
+        <member name="P:ImSendEventArgs.Server">
+            <summary>
+            imServer 服务器节点
+            </summary>
+        </member>
+        <member name="P:ImSendEventArgs.Message">
+            <summary>
+            消息
+            </summary>
+        </member>
+        <member name="P:ImSendEventArgs.Receipt">
+            <summary>
+            是否回执
+            </summary>
+        </member>
         <member name="T:ImClient">
             <summary>
             im 核心类实现
+            </summary>
+        </member>
+        <member name="F:ImClient.OnSend">
+            <summary>
+            推送消息的事件，可审查推向哪个Server节点
             </summary>
         </member>
         <member name="M:ImClient.#ctor(ImClientOptions)">
@@ -50,7 +80,7 @@
             <param name="clientMetaData">客户端相关信息，比如ip</param>
             <returns>websocket 地址：ws://xxxx/ws?token=xxx</returns>
         </member>
-        <member name="M:ImClient.SendMessage(System.Guid,System.Guid[],System.Object,System.Boolean)">
+        <member name="M:ImClient.SendMessage(System.Guid,System.Collections.Generic.IEnumerable{System.Guid},System.Object,System.Boolean)">
             <summary>
             向指定的多个客户端id发送消息
             </summary>
@@ -146,7 +176,7 @@
             <param name="clientMetaData">客户端相关信息，比如ip</param>
             <returns>websocket 地址：ws://xxxx/ws?token=xxx</returns>
         </member>
-        <member name="M:ImHelper.SendMessage(System.Guid,System.Guid[],System.Object,System.Boolean)">
+        <member name="M:ImHelper.SendMessage(System.Guid,System.Collections.Generic.IEnumerable{System.Guid},System.Object,System.Boolean)">
             <summary>
             向指定的多个客户端id发送消息
             </summary>

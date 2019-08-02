@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System;
 using System.Text;
 
@@ -46,7 +47,17 @@ namespace web
                 Servers = new[] { "127.0.0.1:6001" }
             });
 
-            ImHelper.EventBus(t => Console.WriteLine(t.clientId + "上线了"), t => Console.WriteLine(t.clientId + "下线了"));
+            ImHelper.Instance.OnSend += (s, e) => 
+                Console.WriteLine($"ImClient.SendMessage(server={e.Server},data={JsonConvert.SerializeObject(e.Message)})");
+
+            ImHelper.EventBus(
+                t =>
+                {
+                    Console.WriteLine(t.clientId + "上线了");
+                    var onlineUids = ImHelper.GetClientListByOnline();
+                    ImHelper.SendMessage(t.clientId, onlineUids, $"用户{t.clientId}上线了");
+                }, 
+                t => Console.WriteLine(t.clientId + "下线了"));
         }
     }
 }

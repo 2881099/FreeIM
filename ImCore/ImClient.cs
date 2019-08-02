@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 
@@ -24,6 +25,38 @@ public class ImClientOptions
     public string PathMatch { get; set; } = "/ws";
 }
 
+public class ImSendEventArgs : EventArgs
+{
+    /// <summary>
+    /// 发送者的客户端id
+    /// </summary>
+    public Guid SenderClientId { get; }
+    /// <summary>
+    /// 接收者的客户端id
+    /// </summary>
+    public List<Guid> ReceiveClientId { get; } = new List<Guid>();
+    /// <summary>
+    /// imServer 服务器节点
+    /// </summary>
+    public string Server { get; }
+    /// <summary>
+    /// 消息
+    /// </summary>
+    public object Message { get; }
+    /// <summary>
+    /// 是否回执
+    /// </summary>
+    public bool Receipt { get; }
+
+    internal ImSendEventArgs(string server, Guid senderClientId, object message, bool receipt = false)
+    {
+        this.Server = server;
+        this.SenderClientId = senderClientId;
+        this.Message = message;
+        this.Receipt = receipt;
+    }
+}
+
 /// <summary>
 /// im 核心类实现
 /// </summary>
@@ -34,7 +67,10 @@ public class ImClient
     protected string _redisPrefix;
     protected string _pathMatch;
 
-    public EventHandler Error;
+    /// <summary>
+    /// 推送消息的事件，可审查推向哪个Server节点
+    /// </summary>
+    public EventHandler<ImSendEventArgs> OnSend;
 
     /// <summary>
     /// 初始化 imclient
@@ -83,30 +119,33 @@ public class ImClient
     /// <param name="receiveClientId">接收者的客户端id</param>
     /// <param name="message">消息</param>
     /// <param name="receipt">是否回执</param>
-    public void SendMessage(Guid senderClientId, Guid[] receiveClientId, object message, bool receipt = false)
+    public void SendMessage(Guid senderClientId, IEnumerable<Guid> receiveClientId, object message, bool receipt = false)
     {
         receiveClientId = receiveClientId.Distinct().ToArray();
-        Dictionary<string, List<Guid>> redata = new Dictionary<string, List<Guid>>();
+        Dictionary<string, ImSendEventArgs> redata = new Dictionary<string, ImSendEventArgs>();
 
         foreach (var uid in receiveClientId)
         {
             string server = SelectServer(uid);
-            if (redata.ContainsKey(server) == false) redata.Add(server, new List<Guid>());
-            redata[server].Add(uid);
+            if (redata.ContainsKey(server) == false) redata.Add(server, new ImSendEventArgs(server, senderClientId, message, receipt));
+            redata[server].ReceiveClientId.Add(uid);
         }
         var messageJson = JsonConvert.SerializeObject(message);
-        foreach (string server in redata.Keys)
-            _redis.Publish($"{_redisPrefix}Server{server}",
-                JsonConvert.SerializeObject((senderClientId, redata[server], messageJson, receipt)));
+        foreach (var sendArgs in redata.Values)
+        {
+            OnSend?.Invoke(this, sendArgs);
+            _redis.Publish($"{_redisPrefix}Server{sendArgs.Server}",
+                JsonConvert.SerializeObject((senderClientId, sendArgs.ReceiveClientId, messageJson, sendArgs.Receipt)));
+        }
     }
 
     /// <summary>
     /// 获取所在线客户端id
     /// </summary>
     /// <returns></returns>
-    public string[] GetClientListByOnline()
+    public IEnumerable<Guid> GetClientListByOnline()
     {
-        return _redis.HKeys($"{_redisPrefix}Online");
+        return _redis.HKeys($"{_redisPrefix}Online").Select(a => Guid.TryParse(a, out var tryguid) ? tryguid : Guid.Empty).Where(a => a != Guid.Empty);
     }
 
     /// <summary>
