@@ -92,8 +92,6 @@ ajax('/prev-connect-imserver', function(data) {
 
 > [下载Redis-x64-2.8.2402.zip](https://files.cnblogs.com/files/kellynic/Redis-x64-2.8.2402.zip)，点击 start.bat 运行；
 
-> cd imServer && dotnet run
-
 > cd web && dotnet run
 
 > 打开多个浏览器，访问 http://127.0.0.1:5000 发送群消息
