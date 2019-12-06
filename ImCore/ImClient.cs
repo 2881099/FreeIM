@@ -149,6 +149,16 @@ public class ImClient
     }
 
     /// <summary>
+    /// 判断客户端是否在线
+    /// </summary>
+    /// <param name="clientId"></param>
+    /// <returns></returns>
+    public bool HasOnline(Guid clientId)
+    {
+        return _redis.HGet<int>($"{_redisPrefix}Online", clientId.ToString()) > 0;
+    }
+
+    /// <summary>
     /// 事件订阅
     /// </summary>
     /// <param name="online">上线</param>

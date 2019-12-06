@@ -43,6 +43,13 @@ public static class ImHelper
     public static IEnumerable<Guid> GetClientListByOnline() => Instance.GetClientListByOnline();
 
     /// <summary>
+    /// 判断客户端是否在线
+    /// </summary>
+    /// <param name="clientId"></param>
+    /// <returns></returns>
+    public static bool HasOnline(Guid clientId) => Instance.HasOnline(clientId);
+
+    /// <summary>
     /// 事件订阅
     /// </summary>
     /// <param name="online">上线</param>

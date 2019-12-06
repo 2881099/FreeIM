@@ -95,6 +95,13 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:ImClient.HasOnline(System.Guid)">
+            <summary>
+            判断客户端是否在线
+            </summary>
+            <param name="clientId"></param>
+            <returns></returns>
+        </member>
         <member name="M:ImClient.EventBus(System.Action{System.ValueTuple{System.Guid,System.String}},System.Action{System.ValueTuple{System.Guid,System.String}})">
             <summary>
             事件订阅
@@ -189,6 +196,13 @@
             <summary>
             获取所在线客户端id
             </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ImHelper.HasOnline(System.Guid)">
+            <summary>
+            判断客户端是否在线
+            </summary>
+            <param name="clientId"></param>
             <returns></returns>
         </member>
         <member name="M:ImHelper.EventBus(System.Action{System.ValueTuple{System.Guid,System.String}},System.Action{System.ValueTuple{System.Guid,System.String}})">
