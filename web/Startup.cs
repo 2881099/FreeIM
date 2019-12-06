@@ -22,29 +22,27 @@ namespace web
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
-            services.AddSwaggerGen();
+            services.AddControllersWithViews();
+            services.AddRazorPages();
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app)
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             Console.OutputEncoding = Encoding.GetEncoding("GB2312");
             Console.InputEncoding = Encoding.GetEncoding("GB2312");
-            loggerFactory.AddConsole(LogLevel.Error);
 
-            if (env.IsDevelopment())
-                app.UseDeveloperExceptionPage();
+            app.UseDeveloperExceptionPage();
 
+            app.UseRouting();
+            app.UseEndpoints(config => config.MapControllers());
             app.UseDefaultFiles();
             app.UseStaticFiles();
-            app.UseMvc();
-            app.UseSwagger().UseSwaggerUI();
 
             ImHelper.Initialization(new ImClientOptions
             {
                 Redis = new CSRedis.CSRedisClient("118.25.209.177:26379,poolsize=5"),
-                Servers = new[] { "118.25.209.177:6001" }
+                Servers = new[] { "127.0.0.1:6001" }
             });
 
             ImHelper.Instance.OnSend += (s, e) => 

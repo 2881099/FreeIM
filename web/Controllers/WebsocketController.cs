@@ -41,7 +41,7 @@ namespace web.Controllers
             return new
             {
                 code = 0,
-                channels = ImHelper.GetChanList()
+                channels = ImHelper.GetChanList().Select(a => new { a.chan, a.online })
             };
         }
 

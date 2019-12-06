@@ -15,7 +15,7 @@
 
         <h1>聊天室 <input type="button" value="创建聊天室" @click="createChannel" /></h1>
         <div v-for="c in channels">
-            <input type="button" :value="'加入 ' + c.item1 + '(' + c.item2 + '人在线) 聊天室'" @click="joinChannel(c.item1)" />
+            <input type="button" :value="'加入 ' + c.chan + '(' + c.online + '人在线) 聊天室'" @click="joinChannel(c.chan)" />
         </div>
 
         <hr>

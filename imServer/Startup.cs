@@ -6,7 +6,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Text;
-using imServer.Configuration;
 
 namespace imServer
 {
@@ -14,33 +13,30 @@ namespace imServer
     public class Startup
     {
 
-        public Startup(IHostingEnvironment env)
+        public Startup(IConfiguration configuration)
         {
-            var builder = new ConfigurationBuilder()
-              .AddJsonFile("appsettings.json")
-              .AddJsonFile($"appsettings.{env.EnvironmentName}.json")
-              .AddEnvironmentVariables();
-            Config = builder.Build();
-        }
-        public IConfiguration Config;
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services.Configure<ImServerOption>(Config.GetSection(CONFIG.OPTIONS));
+            Configuration = configuration;
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public IConfiguration Configuration;
+
+        public void ConfigureServices(IServiceCollection services)
+        {
+        }
+
+        public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             Console.OutputEncoding = Encoding.GetEncoding("GB2312");
             Console.InputEncoding = Encoding.GetEncoding("GB2312");
-            if (env.IsDevelopment())
-                app.UseDeveloperExceptionPage();
-            var config = app.ApplicationServices.GetRequiredService<IOptions<ImServerOption>>().Value;
+            
+            app.UseDeveloperExceptionPage();
+
             app.UseImServer(new ImServerOptions
             {
-                Redis = new CSRedis.CSRedisClient(config.CSRedisClient),
-                Servers = config.Servers.Split(";"),
-                Server = config.Server
+                Redis = new CSRedis.CSRedisClient(Configuration["ImServerOption:CSRedisClient"]),
+                Servers = Configuration["ImServerOption:Servers"].Split(";"),
+                Server = Configuration["ImServerOption:Server"]
             });
         }
     }
