@@ -81,7 +81,7 @@ class ImServer : ImClient
 
         string token = context.Request.Query["token"];
         if (string.IsNullOrEmpty(token)) return;
-        var token_value = await _redis.GetAsync($"{_redisPrefix}Token{token}");
+        var token_value = _redis.Get($"{_redisPrefix}Token{token}");
         if (string.IsNullOrEmpty(token_value))
             throw new Exception("授权错误：用户需通过 ImHelper.PrevConnectServer 获得包含 token 的连接");
 
@@ -111,10 +111,10 @@ class ImServer : ImClient
         }
         wslist.TryRemove(newid, out var oldcli);
         if (wslist.Any() == false) _clients.TryRemove(data.clientId, out var oldwslist);
-        await _redis.EvalAsync($"if redis.call('HINCRBY', KEYS[1], '{data.clientId}', '-1') <= 0 then redis.call('HDEL', KEYS[1], '{data.clientId}') end return 1",
+        _redis.Eval($"if redis.call('HINCRBY', KEYS[1], '{data.clientId}', '-1') <= 0 then redis.call('HDEL', KEYS[1], '{data.clientId}') end return 1",
             $"{_redisPrefix}Online");
         LeaveChan(data.clientId, GetChanListByClientId(data.clientId));
-        await _redis.PublishAsync($"evt_{_redisPrefix}Offline", token_value);
+        _redis.Publish($"evt_{_redisPrefix}Offline", token_value);
     }
 
     void RedisSubScribleMessage(CSRedis.CSRedisClient.SubscribeMessageEventArgs e)
