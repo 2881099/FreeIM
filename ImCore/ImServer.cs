@@ -58,7 +58,7 @@ class ImServer : ImClient
     public ImServer(ImServerOptions options) : base(options)
     {
         _server = options.Server;
-        _redis.Subscribe(($"{_redisPrefix}Server{_server}", RedisSubScribleMessage));
+        _redis.Subscribe($"{_redisPrefix}Server{_server}", RedisSubScribleMessage);
     }
 
     const int BufferSize = 4096;
@@ -93,7 +93,12 @@ class ImServer : ImClient
 
         var wslist = _clients.GetOrAdd(data.clientId, cliid => new ConcurrentDictionary<Guid, ImServerClient>());
         wslist.TryAdd(newid, cli);
-        _redis.StartPipe(a => a.HIncrBy($"{_redisPrefix}Online", data.clientId.ToString(), 1).Publish($"evt_{_redisPrefix}Online", token_value));
+        using (var pipe = _redis.StartPipe())
+        {
+            pipe.HIncrBy($"{_redisPrefix}Online", data.clientId.ToString(), 1);
+            pipe.Publish($"evt_{_redisPrefix}Online", token_value);
+            pipe.EndPipe();
+        }
 
         var buffer = new byte[BufferSize];
         var seg = new ArraySegment<byte>(buffer);
@@ -111,17 +116,16 @@ class ImServer : ImClient
         }
         wslist.TryRemove(newid, out var oldcli);
         if (wslist.Any() == false) _clients.TryRemove(data.clientId, out var oldwslist);
-        _redis.Eval($"if redis.call('HINCRBY', KEYS[1], '{data.clientId}', '-1') <= 0 then redis.call('HDEL', KEYS[1], '{data.clientId}') end return 1",
-            $"{_redisPrefix}Online");
+        _redis.Eval($"if redis.call('HINCRBY', KEYS[1], '{data.clientId}', '-1') <= 0 then redis.call('HDEL', KEYS[1], '{data.clientId}') end return 1", new[] { $"{_redisPrefix}Online" });
         LeaveChan(data.clientId, GetChanListByClientId(data.clientId));
         _redis.Publish($"evt_{_redisPrefix}Offline", token_value);
     }
 
-    void RedisSubScribleMessage(CSRedis.CSRedisClient.SubscribeMessageEventArgs e)
+    void RedisSubScribleMessage(string chan, object msg)
     {
         try
         {
-            var data = JsonConvert.DeserializeObject<(Guid senderClientId, Guid[] receiveClientId, string content, bool receipt)>(e.Body);
+            var data = JsonConvert.DeserializeObject<(Guid senderClientId, Guid[] receiveClientId, string content, bool receipt)>(msg as string);
             Trace.WriteLine($"收到消息：{data.content}" + (data.receipt ? "【需回执】" : ""));
 
             var outgoing = new ArraySegment<byte>(Encoding.UTF8.GetBytes(data.content));

@@ -34,7 +34,7 @@ namespace imServer
 
             app.UseImServer(new ImServerOptions
             {
-                Redis = new CSRedis.CSRedisClient(Configuration["ImServerOption:CSRedisClient"]),
+                Redis = new FreeRedis.RedisClient(Configuration["ImServerOption:RedisClient"]),
                 Servers = Configuration["ImServerOption:Servers"].Split(";"),
                 Server = Configuration["ImServerOption:Server"]
             });

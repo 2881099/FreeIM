@@ -21,7 +21,7 @@
       "environmentVariables": {
         "ImServerOption:Servers": "127.0.0.1:6001;127.0.0.2:6002",
         "ImServerOption:Server": "127.0.0.1:6001",
-        "ImServerOption:CSRedisClient": "118.25.209.177:26379,poolsize=5",
+        "ImServerOption:RedisClient": "127.0.0.1:6379,poolsize=10",
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "applicationUrl": "http://0.0.0.0:6001/"

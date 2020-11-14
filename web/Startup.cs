@@ -41,7 +41,7 @@ namespace web
 
             ImHelper.Initialization(new ImClientOptions
             {
-                Redis = new CSRedis.CSRedisClient("118.25.209.177:26379,idleTimeout=3000,poolsize=5"),
+                Redis = new FreeRedis.RedisClient("127.0.0.1:6379,poolsize=10"),
                 Servers = new[] { "127.0.0.1:6001" }
             });
 

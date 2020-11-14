@@ -1,4 +1,4 @@
-﻿using CSRedis;
+﻿using FreeRedis;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -14,7 +14,7 @@ public class ImClientOptions
     /// <summary>
     /// CSRedis 对象，用于存储数据和发送消息
     /// </summary>
-    public CSRedisClient Redis { get; set; }
+    public RedisClient Redis { get; set; }
     /// <summary>
     /// 负载的服务端
     /// </summary>
@@ -62,7 +62,7 @@ public class ImSendEventArgs : EventArgs
 /// </summary>
 public class ImClient
 {
-    protected CSRedisClient _redis;
+    protected RedisClient _redis;
     protected string[] _servers;
     protected string _redisPrefix;
     protected string _pathMatch;
@@ -167,9 +167,13 @@ public class ImClient
         Action<(Guid clientId, string clientMetaData)> online,
         Action<(Guid clientId, string clientMetaData)> offline)
     {
-        _redis.Subscribe(
-            ($"evt_{_redisPrefix}Online", msg => online(JsonConvert.DeserializeObject<(Guid clientId, string clientMetaData)>(msg.Body))),
-            ($"evt_{_redisPrefix}Offline", msg => offline(JsonConvert.DeserializeObject<(Guid clientId, string clientMetaData)>(msg.Body))));
+        var chanOnline = $"evt_{_redisPrefix}Online";
+        var chanOffline = $"evt_{_redisPrefix}Offline";
+        _redis.Subscribe(new[] { chanOnline, chanOffline }, (chan, msg) =>
+        {
+            if (chan == chanOnline) online(JsonConvert.DeserializeObject<(Guid clientId, string clientMetaData)>(msg as string));
+            if (chan == chanOffline) offline(JsonConvert.DeserializeObject<(Guid clientId, string clientMetaData)>(msg as string));
+        });
     }
 
     #region 群聊频道，每次上线都必须重新加入
@@ -181,10 +185,13 @@ public class ImClient
     /// <param name="chan">群聊频道名</param>
     public void JoinChan(Guid clientId, string chan)
     {
-        _redis.StartPipe(a => a
-            .HSet($"{_redisPrefix}Chan{chan}", clientId.ToString(), 0)
-            .HSet($"{_redisPrefix}Client{clientId}", chan, 0)
-            .HIncrBy($"{_redisPrefix}ListChan", chan, 1));
+        using (var pipe = _redis.StartPipe())
+        {
+            pipe.HSet($"{_redisPrefix}Chan{chan}", clientId.ToString(), 0);
+            pipe.HSet($"{_redisPrefix}Client{clientId}", chan, 0);
+            pipe.HIncrBy($"{_redisPrefix}ListChan", chan, 1);
+            pipe.EndPipe();
+        }
     }
     /// <summary>
     /// 离开群聊频道
@@ -197,11 +204,12 @@ public class ImClient
         using (var pipe = _redis.StartPipe())
         {
             foreach (var chan in chans)
-                pipe
-                    .HDel($"{_redisPrefix}Chan{chan}", clientId.ToString())
-                    .HDel($"{_redisPrefix}Client{clientId}", chan)
-                    .Eval($"if redis.call('HINCRBY', KEYS[1], '{chan}', '-1') <= 0 then redis.call('HDEL', KEYS[1], '{chan}') end return 1",
-                        $"{_redisPrefix}ListChan");
+            {
+                pipe.HDel($"{_redisPrefix}Chan{chan}", clientId.ToString());
+                pipe.HDel($"{_redisPrefix}Client{clientId}", chan);
+                pipe.Eval($"if redis.call('HINCRBY', KEYS[1], '{chan}', '-1') <= 0 then redis.call('HDEL', KEYS[1], '{chan}') end return 1", new[] { $"{_redisPrefix}ListChan" });
+            }
+            pipe.EndPipe();
         }
     }
     /// <summary>

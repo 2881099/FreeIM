@@ -12,27 +12,13 @@ public void Configure(IApplicationBuilder app)
 {
     app.UseImServer(new imServerOptions
     {
-        Redis = new CSRedis.CSRedisClient("127.0.0.1:6379,poolsize=5"),
+        Redis = new FreeRedis.RedisClient("127.0.0.1:6379,poolsize=5"),
         Servers = new[] { "127.0.0.1:6001" }, //集群配置
         Server = "127.0.0.1:6001"
     });
 }
 ```
-> 一套永远不需要迭代更新的IM服务端，ImServer 支持 .NetStandard 2.0
-
-### Docker
-```shell
-docker pull movingsam/imcore
-
-docker run \
--e "ImServerOption:Servers=118.25.209.177:6000;118.25.209.177:6001;118.25.209.177:6002" \
--e "ImServerOption:Server=118.25.209.177:6000" \
--e "ImServerOption:CSRedisClient=redis-server地址,poolsize=5" \
--e "ASPNETCORE_URLS=http://+:6002" \
--p 6002:6002 \
--d \
-imcore
-```
+> 一套永远不需要迭代更新的IM服务端，ImServer 支持 .NET5.0、.NETCore2.1+、NETStandard2.0
 
 ### WebApi业务端
 ```csharp
@@ -42,7 +28,7 @@ public void Configure(IApplicationBuilder app)
 
     ImHelper.Initialization(new ImClientOptions
     {
-        Redis = new CSRedis.CSRedisClient("127.0.0.1:6379,poolsize=5"),
+        Redis = new FreeRedis.RedisClient("127.0.0.1:6379,poolsize=5"),
         Servers = new[] { "127.0.0.1:6001" }
     });
 
@@ -91,7 +77,7 @@ ajax('/prev-connect-imserver', function(data) {
 
 # Demo
 
-> 运行环境：.NETCore 2.1 + redis-server 2.8
+> 运行环境：.NET5.0 + redis-server 2.8
 
 > [下载Redis-x64-2.8.2402.zip](https://files.cnblogs.com/files/kellynic/Redis-x64-2.8.2402.zip)，点击 start.bat 运行；
 
