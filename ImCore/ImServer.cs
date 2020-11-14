@@ -126,7 +126,7 @@ class ImServer : ImClient
         try
         {
             var data = JsonConvert.DeserializeObject<(Guid senderClientId, Guid[] receiveClientId, string content, bool receipt)>(msg as string);
-            Trace.WriteLine($"收到消息：{data.content}" + (data.receipt ? "【需回执】" : ""));
+            Console.WriteLine($"收到消息：{data.content}" + (data.receipt ? "【需回执】" : ""));
 
             var outgoing = new ArraySegment<byte>(Encoding.UTF8.GetBytes(data.content));
             foreach (var clientId in data.receiveClientId)
@@ -162,7 +162,7 @@ class ImServer : ImClient
         }
         catch (Exception ex)
         {
-            Trace.WriteLine($"订阅方法出错了：{ex.Message}");
+            Console.WriteLine($"订阅方法出错了：{ex.Message}");
         }
     }
 }
