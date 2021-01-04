@@ -1,35 +1,8 @@
 {
-  "iisSettings": {
-    "windowsAuthentication": false,
-    "anonymousAuthentication": true,
-    "iisExpress": {
-      "applicationUrl": "http://localhost:6001/",
-      "sslPort": 0
-    }
-  },
   "profiles": {
-    "IIS Express": {
-      "commandName": "IISExpress",
-      "launchBrowser": true,
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
-    },
     "imServer": {
       "commandName": "Project",
-      "launchBrowser": true,
-      "environmentVariables": {
-        "ImServerOption:Servers": "127.0.0.1:6001;127.0.0.2:6002",
-        "ImServerOption:Server": "127.0.0.1:6001",
-        "ImServerOption:RedisClient": "127.0.0.1:6379,poolsize=10",
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      },
-      "applicationUrl": "http://0.0.0.0:6001/"
-    },
-    "Docker": {
-      "commandName": "Docker",
-      "launchBrowser": true,
-      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}"
+      "commandLineArgs": "--urls=http://*:6001"
     }
   }
 }
