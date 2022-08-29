@@ -4,7 +4,7 @@
 
 > dotnet add package FreeIM
 
-### IM 服务端
+### ImServer 服务端
 
 ```csharp
 public void Configure(IApplicationBuilder app)
