@@ -88,7 +88,7 @@ ajax('/prev-connect-imserver', function(data) {
 
 ![image](https://user-images.githubusercontent.com/16286519/187127834-d3bb2339-8a9b-4d8c-a0ed-3f1d35b4c7c3.png)
 
-## 设计思路
+## 传统痛点
 
 协议痛点：如果浏览器使用 websocket 协议，iOS 使用其他协议，协议不一致将很难维护。
 
@@ -105,7 +105,7 @@ ajax('/prev-connect-imserver', function(data) {
 
 诸如此类业务判断会很复杂，使用 `ImServer` 做业务逻辑，最终 `ImServer` 和 `终端` 都将变成巨无霸难以维护。
 
-FreeIM 设计思路：
+## 设计思路
 
 所有 `终端`（如浏览器/小程序/iOS/android） 使用 websocket 连接 `ImServer`；
 
