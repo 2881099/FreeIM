@@ -90,6 +90,23 @@ ajax('/prev-connect-imserver', function(data) {
 
 ## 设计思路
 
+协议痛点：如果浏览器使用 websocket 协议，iOS 使用其他协议，协议不一致将很难维护。
+
+> 建议所有端都使用 websocket 协议，adorid/iOS/h5/小程序 全部支持 websocket 客户端。
+
+职责痛点：IM 的系统一般涉及【我的好友】、【我的群】、【历史消息】等等。。那么，`ImServer` 与 `WebApi`(业务方) 该保持何种关系呢？
+
+用户A向好友B发送消息，分析一下：
+
+* 需要判断B是否为A好友；
+* 需要判断A是否有权限；
+
+获取历史聊天记录，如果多个 `终端` websocket.send('gethistory')，再在 onmessage 里定位回调处理，将多么麻烦啊？
+
+诸如此类业务判断会很复杂，使用 `ImServer` 做业务逻辑，最终 `ImServer` 和 `终端` 都将变成巨无霸难以维护。
+
+FreeIM 设计思路如下：
+
 `终端`（如浏览器） 使用 websocket 连接 `ImServer`；
 
 `ImServer` 根据 clientId 分区管理 websocket 连接，`ImServer` 支持群集部署；
@@ -106,21 +123,6 @@ ajax('/prev-connect-imserver', function(data) {
 
 - `ImServer` 充当消息转发，连接维护，代码万年不变、且不需要重启维护
 - `WebApi` 负责所有业务
-
-解决了协议痛点：如果浏览器使用 websocket 协议，iOS 使用其他协议，协议不一致将很难维护。
-
-> 建议所有端都使用 websocket 协议，adorid/iOS/h5/小程序 全部支持 websocket 客户端。
-
-解决了职责痛点：IM 的系统一般涉及【我的好友】、【我的群】、【历史消息】等等。。那么，`ImServer` 与 `WebApi`(业务方) 该保持何种关系呢？
-
-用户A向好友B发送消息，分析一下：
-
-* 需要判断B是否为A好友；
-* 需要判断A是否有权限；
-
-获取历史聊天记录，如果多个 `终端` websocket.send('gethistory')，再在 onmessage 里定位回调处理，将多么麻烦啊？
-
-诸如此类业务判断会很复杂，使用 `ImServer` 做业务逻辑，最终 `ImServer` 和 `终端` 都将变成巨无霸难以维护。
 
 ## 发送消息
 
