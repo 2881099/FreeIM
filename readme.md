@@ -48,7 +48,6 @@ public void Configure(IApplicationBuilder app)
 | HasOnline | clientId | 判断客户端是否在线 |
 | EventBus | (上线委托, 离线委托) | socket上线与下线事件 |
 
-
 | 频道 | 参数 | 描述 |
 | - | - | - |
 | JoinChan | (clientId, 频道名) | 加入 |
