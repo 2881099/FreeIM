@@ -89,7 +89,7 @@ ajax('/prev-connect-imserver', function(data) {
 
 ![image](https://user-images.githubusercontent.com/16286519/187127834-d3bb2339-8a9b-4d8c-a0ed-3f1d35b4c7c3.png)
 
-## 传统痛点
+## 分析痛点
 
 协议痛点：如果浏览器使用 websocket 协议，iOS 使用其他协议，协议不一致将很难维护。
 
