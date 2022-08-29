@@ -1,6 +1,8 @@
 ﻿FreeIM 使用 websocket 协议实现简易、高性能（单机支持5万+连接）、集群即时通讯组件，支持点对点通讯、群聊通讯、上线下线事件消息等众多实用性功能。 `ImCore` 已正式改名为 `FreeIM`。[【网络版斗地主示例】](https://github.com/2881099/FightLandlord)
 
-使用场景：好友聊天、群聊天、直播间、实时评论区、游戏
+使用场景：好友聊天、群聊天、直播间、实时评论区、游戏。
+
+如果对本项目感兴趣，欢迎加入 FreeSql QQ讨论群：8578575
 
 > dotnet add package FreeIM
 
