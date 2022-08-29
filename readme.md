@@ -4,7 +4,7 @@
 
 > dotnet add package FreeIM
 
-### ImServer 服务端
+## ImServer 服务端
 
 ```csharp
 public void Configure(IApplicationBuilder app)
@@ -19,7 +19,7 @@ public void Configure(IApplicationBuilder app)
 ```
 > 一套永远不需要迭代更新的 `ImServer` 服务端，支持 .NET6.0、.NETCore2.1+、NETStandard2.0
 
-### WebApi 业务端
+## WebApi 业务端
 
 ```csharp
 public void Configure(IApplicationBuilder app)
@@ -62,7 +62,7 @@ public void Configure(IApplicationBuilder app)
 
 > ImHelper 支持 .NetFramework 4.5+、.NetStandard 2.0
 
-### Html5 终端
+## Html5 终端
 
 终端连接 websocket 前，应该先请求 `WebApi` 获得授权过的地址(ImHelper.PrevConnectServer)，伪代码：
 
@@ -76,19 +76,19 @@ ajax('/prev-connect-imserver', function(data) {
 })
 ```
 
-# 项目演示
+## 项目演示
 
-> 运行环境：.NET6.0 + redis-server 2.8
+运行环境：.NET6.0 + redis-server 2.8
 
 > cd ImServer && dotnet run --urls=http://*:6001
 
 > cd WebApi && dotnet run
 
-> 打开多个浏览器，分别访问 http://127.0.0.1:5000 发送群消息
+打开多个浏览器，分别访问 http://127.0.0.1:5000 发送群消息
 
-![image](https://user-images.githubusercontent.com/16286519/62152387-05980c00-b335-11e9-8b6d-3f6d03bb3629.png)
+![image](https://user-images.githubusercontent.com/16286519/187127834-d3bb2339-8a9b-4d8c-a0ed-3f1d35b4c7c3.png)
 
-# 设计思路
+## 设计思路
 
 `终端`（如浏览器） 使用 websocket 连接 `ImServer`；
 
@@ -122,7 +122,7 @@ ajax('/prev-connect-imserver', function(data) {
 
 诸如此类业务判断会很复杂，使用 `ImServer` 做业务逻辑，最终 `ImServer` 和 `终端` 都将变成巨无霸难以维护。
 
-### 发送消息
+## 发送消息
 
 业务和推送分离的设计，即 `ImServer` 只负责推送工作，`WebApi` 负责业务。
 
@@ -135,7 +135,7 @@ FreeIM 强依赖 redis-server 组件功能：
 - 集成了 redis 轻量级的订阅发布功能，实现消息缓冲发送，后期可更换为其他技术
 - 使用了 redis 存储一些关系数据，如在线 clientId、频道信息、授权信息等
 
-### 集群分区
+## 集群分区
 
 单个 `ImServer` 实例支持多少个客户端连接，3万人没问题？如果在线用户有10万人，怎么办？？？
 
@@ -153,7 +153,7 @@ FreeIM 强依赖 redis-server 组件功能：
 
 每个 `ImServer` 管理着对应的终端连接，当接收到 redis 订阅消息后，向对应的终端连接推送数据。
 
-### 事件消息
+## 事件消息
 
 IM 系统比较常用的有上线、下线，在 `ImServer` 层才能准确捕捉事件，但业务代码不合适在这上面编写了。
 
@@ -161,7 +161,7 @@ IM 系统比较常用的有上线、下线，在 `ImServer` 层才能准确捕�
 
 ![image](https://user-images.githubusercontent.com/16286519/62150466-a46e3980-b330-11e9-86f3-d050160f0913.png)
 
-### A向B发文件的例子
+## A向B发文件的例子
 
 1、A向 `WebApi` 传文件
 
@@ -173,7 +173,7 @@ IM 系统比较常用的有上线、下线，在 `ImServer` 层才能准确捕�
 
 5、B收到消息，A文件传输完毕（含文件链接）
 
-# 有感而发
+## 有感而发
 
 为什么说 SignalR 不合适做 IM？
 
