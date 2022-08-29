@@ -101,7 +101,7 @@ ajax('/prev-connect-imserver', function(data) {
 * 需要判断B是否为A好友；
 * 需要判断A是否有权限；
 
-获取历史聊天记录，如果多个 `终端` websocket.send('gethistory')，再在 onmessage 里定位回调处理，将多么麻烦啊？
+获取历史聊天记录，多个 `终端` websocket.send('gethistory')，再在 onmessage 定位回调处理，多麻烦啊？
 
 诸如此类业务判断会很复杂，使用 `ImServer` 做业务逻辑，最终 `ImServer` 和 `终端` 都将变成巨无霸难以维护。
 
