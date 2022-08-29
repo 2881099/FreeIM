@@ -2,12 +2,12 @@
 
 	<PropertyGroup>
 		<TargetFrameworks>netstandard2.0;net45</TargetFrameworks>
-		<Version>2.0.3</Version>
+		<Version>1.0.0</Version>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<Authors>YeXiangQin</Authors>
 		<Description>.NET websocket 实现简易、高性能、集群即时通讯组件，支持点对点通讯、群聊通讯、上线下线事件消息等众多实用性功能.</Description>
-		<PackageProjectUrl>https://github.com/2881099/im</PackageProjectUrl>
-		<RepositoryUrl>https://github.com/2881099/im</RepositoryUrl>
+		<PackageProjectUrl>https://github.com/2881099/FreeIM</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/2881099/FreeIM</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageTags>im;websocket;signalr</PackageTags>
@@ -18,15 +18,15 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-		<DocumentationFile>ImCore.xml</DocumentationFile>
+		<DocumentationFile>FreeIM.xml</DocumentationFile>
 		<WarningLevel>3</WarningLevel>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="FreeRedis" Version="0.6.2" />
+		<PackageReference Include="FreeRedis" Version="0.6.5" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 		<PackageReference Include="System.ValueTuple" Version="4.5.0" />
-		<PackageReference Include="System.Memory" Version="4.5.4" />
+		<PackageReference Include="System.Memory" Version="4.5.5" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">

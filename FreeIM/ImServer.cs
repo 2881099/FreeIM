@@ -6,14 +6,13 @@ using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
-using System.Diagnostics;
 using System.Linq;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-public static class ImServerExtenssions
+public static class FreeImServerExtenssions
 {
     static bool isUseWebSockets = false;
 
@@ -23,7 +22,7 @@ public static class ImServerExtenssions
     /// <param name="app"></param>
     /// <param name="options"></param>
     /// <returns></returns>
-    public static IApplicationBuilder UseImServer(this IApplicationBuilder app, ImServerOptions options)
+    public static IApplicationBuilder UseFreeImServer(this IApplicationBuilder app, ImServerOptions options)
     {
         app.Map(options.PathMatch, appcur =>
         {

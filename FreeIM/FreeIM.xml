@@ -1,54 +1,9 @@
 <?xml version="1.0"?>
 <doc>
     <assembly>
-        <name>ImCore</name>
+        <name>FreeIM</name>
     </assembly>
     <members>
-        <member name="T:ImClientOptions">
-            <summary>
-            im 核心类实现的配置所需
-            </summary>
-        </member>
-        <member name="P:ImClientOptions.Redis">
-            <summary>
-            CSRedis 对象，用于存储数据和发送消息
-            </summary>
-        </member>
-        <member name="P:ImClientOptions.Servers">
-            <summary>
-            负载的服务端
-            </summary>
-        </member>
-        <member name="P:ImClientOptions.PathMatch">
-            <summary>
-            websocket请求的路径，默认值：/ws
-            </summary>
-        </member>
-        <member name="P:ImSendEventArgs.SenderClientId">
-            <summary>
-            发送者的客户端id
-            </summary>
-        </member>
-        <member name="P:ImSendEventArgs.ReceiveClientId">
-            <summary>
-            接收者的客户端id
-            </summary>
-        </member>
-        <member name="P:ImSendEventArgs.Server">
-            <summary>
-            imServer 服务器节点
-            </summary>
-        </member>
-        <member name="P:ImSendEventArgs.Message">
-            <summary>
-            消息
-            </summary>
-        </member>
-        <member name="P:ImSendEventArgs.Receipt">
-            <summary>
-            是否回执
-            </summary>
-        </member>
         <member name="T:ImClient">
             <summary>
             im 核心类实现
@@ -164,9 +119,54 @@
             <param name="chan">群聊频道名</param>
             <param name="message">消息</param>
         </member>
+        <member name="T:ImClientOptions">
+            <summary>
+            im 核心类实现的配置所需
+            </summary>
+        </member>
+        <member name="P:ImClientOptions.Redis">
+            <summary>
+            CSRedis 对象，用于存储数据和发送消息
+            </summary>
+        </member>
+        <member name="P:ImClientOptions.Servers">
+            <summary>
+            负载的服务端
+            </summary>
+        </member>
+        <member name="P:ImClientOptions.PathMatch">
+            <summary>
+            websocket请求的路径，默认值：/ws
+            </summary>
+        </member>
+        <member name="P:ImSendEventArgs.SenderClientId">
+            <summary>
+            发送者的客户端id
+            </summary>
+        </member>
+        <member name="P:ImSendEventArgs.ReceiveClientId">
+            <summary>
+            接收者的客户端id
+            </summary>
+        </member>
+        <member name="P:ImSendEventArgs.Server">
+            <summary>
+            imServer 服务器节点
+            </summary>
+        </member>
+        <member name="P:ImSendEventArgs.Message">
+            <summary>
+            消息
+            </summary>
+        </member>
+        <member name="P:ImSendEventArgs.Receipt">
+            <summary>
+            是否回执
+            </summary>
+        </member>
         <member name="T:ImHelper">
             <summary>
-            im 核心类实现的静态代理类
+            im 核心类 ImClient 实现的静态代理类
             </summary>
         </member>
         <member name="M:ImHelper.Initialization(ImClientOptions)">
@@ -267,7 +267,7 @@
             <param name="chan">群聊频道名</param>
             <param name="message">消息</param>
         </member>
-        <member name="M:ImServerExtenssions.UseImServer(Microsoft.AspNetCore.Builder.IApplicationBuilder,ImServerOptions)">
+        <member name="M:FreeImServerExtenssions.UseFreeImServer(Microsoft.AspNetCore.Builder.IApplicationBuilder,ImServerOptions)">
             <summary>
             启用 ImServer 服务端
             </summary>

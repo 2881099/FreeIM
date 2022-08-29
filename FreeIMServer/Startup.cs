@@ -32,7 +32,7 @@ namespace imServer
             
             app.UseDeveloperExceptionPage();
 
-            app.UseImServer(new ImServerOptions
+            app.UseFreeImServer(new ImServerOptions
             {
                 Redis = new FreeRedis.RedisClient(Configuration["ImServerOption:RedisClient"]),
                 Servers = Configuration["ImServerOption:Servers"].Split(";"),

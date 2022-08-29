@@ -10,7 +10,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\ImCore\ImCore.csproj" />
+		<ProjectReference Include="..\FreeIM\FreeIM.csproj" />
 	</ItemGroup>
 	<ItemGroup>
 		<Content Update="appsettings.Production.json">

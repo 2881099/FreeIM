@@ -1,16 +1,19 @@
-﻿ImCore 利用 webSocket 协议实现简易、高性能（单机支持5万+连接）、集群即时通讯组件，支持点对点通讯、群聊通讯、上线下线事件消息等众多实用性功能。
+﻿FreeIM 利用 WebSocket 协议实现简易、高性能（单机支持5万+连接）、集群即时通讯组件，支持点对点通讯、群聊通讯、上线下线事件消息等众多实用性功能。
+
+> `ImCore` 已正式改名为 `FreeIM`
 
 [【网络版斗地主示例】](https://github.com/2881099/FightLandlord)
 
 # Quick Start
 
-> dotnet add package ImCore
+> dotnet add package FreeIM
 
-### IM服务端
+### IM 服务端
+
 ```csharp
 public void Configure(IApplicationBuilder app)
 {
-    app.UseImServer(new imServerOptions
+    app.UseFreeImServer(new ImServerOptions
     {
         Redis = new FreeRedis.RedisClient("127.0.0.1:6379,poolsize=5"),
         Servers = new[] { "127.0.0.1:6001" }, //集群配置
@@ -18,9 +21,10 @@ public void Configure(IApplicationBuilder app)
     });
 }
 ```
-> 一套永远不需要迭代更新的IM服务端，ImServer 支持 .NET5.0、.NETCore2.1+、NETStandard2.0
+> 一套永远不需要迭代更新的 ImServer 服务端，ImServer 支持 .NET6.0、.NETCore2.1+、NETStandard2.0
 
-### WebApi业务端
+### WebApi 业务端
+
 ```csharp
 public void Configure(IApplicationBuilder app)
 {
@@ -62,9 +66,10 @@ public void Configure(IApplicationBuilder app)
 
 > ImHelper 支持 .NetFramework 4.5+、.NetStandard 2.0
 
-### Html5终端
+### Html5 终端
 
 前端连接 webSocket 前，应该先请求 webApi 获得授权过的地址(ImHelper.PrevConnectServer)，伪代码：
+
 ```javascript
 ajax('/prev-connect-imserver', function(data) {
     var url = data; //此时的值：ws://127.0.0.1:6001/ws?token=xxxxx
@@ -189,4 +194,4 @@ im 的特点必定是长连接，轮训的功能用不上。
 
 但是过多使用 hub，signalr 服务端会被业务入侵严重，业务变化频繁后不得不重新发布版本，每次部署所有终端都会断开连接，遇到5分钟发一次业务补丁的时候，类似离线和上线提示好友的功能就无法实现。
 
-ImCore 的设计是业务和推送分离，即 imServer 永不更新重启，业务全部在 webApi 上编写，终端连接的是 imServer 就不会频繁重启的问题。
+FreeIM 的设计是业务和推送分离，即 imServer 永不更新重启，业务全部在 webApi 上编写，终端连接的是 imServer 就不会频繁重启的问题。

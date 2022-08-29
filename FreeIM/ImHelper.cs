@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 /// <summary>
-/// im 核心类实现的静态代理类
+/// im 核心类 ImClient 实现的静态代理类
 /// </summary>
 public static class ImHelper
 {
