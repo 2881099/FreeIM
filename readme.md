@@ -78,7 +78,7 @@ ajax('/prev-connect-imserver', function(data) {
 
 ## 项目演示
 
-运行环境：.NET6.0 + redis-server 2.8
+运行环境：.NET6.0 + redis-server 2.8+
 
 > cd ImServer && dotnet run --urls=http://*:6001
 
