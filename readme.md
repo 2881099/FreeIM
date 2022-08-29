@@ -1,6 +1,6 @@
 ﻿FreeIM 使用 websocket 协议实现简易、高性能（单机支持5万+连接）、集群即时通讯组件，支持点对点通讯、群聊通讯、上线下线事件消息等众多实用性功能。 `ImCore` 已正式改名为 `FreeIM`。[【网络版斗地主示例】](https://github.com/2881099/FightLandlord)
 
-# Quick Start
+使用场景：好友聊天、群聊天、直播间、实时评论区、游戏
 
 > dotnet add package FreeIM
 
@@ -57,8 +57,8 @@ public void Configure(IApplicationBuilder app)
 | GetChanOnline | (频道名) | 获取频道的在线人数 |
 | SendChanMessage | (clientId, 频道名, 消息内容) | 发送消息，所有在线的用户将收到消息 |
 
-- clientId 应该与 webApi 的用户id相同，或者有关联；
-- 频道适用临时的群聊需求，如：聊天室、即时讨论区；
+- clientId 应该与用户id相同，或者关联；
+- 频道适用临时的群聊需求，如聊天室、讨论区；
 
 > ImHelper 支持 .NetFramework 4.5+、.NetStandard 2.0
 
