@@ -144,13 +144,10 @@ FreeIM 强依赖 redis-server 组件功能：
 
 部署 4 个 `ImServer`：
 
-`ImServer`1 订阅 redisChanne1
-
-`ImServer`2 订阅 redisChanne2
-
-`ImServer`3 订阅 redisChanne3
-
-`ImServer`4 订阅 redisChanne4
+- `ImServer`1 订阅 redisChanne1
+- `ImServer`2 订阅 redisChanne2
+- `ImServer`3 订阅 redisChanne3
+- `ImServer`4 订阅 redisChanne4
 
 `WebApi`(业务方) 根据接收方的 clientId 后四位 16 进制与节点总数取模，定位到对应的 redisChannel，进行 redis->publish 操作将消息定位到相应的 `ImServer`。
 
