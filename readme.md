@@ -94,7 +94,7 @@ ajax('/prev-connect-imserver', function(data) {
 
 `ImServer` 根据 clientId 分区管理 websocket 连接，`ImServer` 支持群集部署；
 
-`WebApi` 或其他应用端，使用 ImHelper 调用相关方法（如：SendMessage、群聊相关方法），将数据推至 Redis channel；
+`WebApi` 使用 ImHelper 调用方法（如：SendMessage、群聊相关方法），将数据推至 Redis channel；
 
 `ImServer` 订阅 Redis channel，收到消息后向 `终端`（如浏览器）推送消息；
 
