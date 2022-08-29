@@ -107,7 +107,7 @@ ajax('/prev-connect-imserver', function(data) {
 
 ## 设计思路
 
-所有 `终端`（如浏览器/小程序/iOS/android） 使用 websocket 连接 `ImServer`；
+所有 `终端`（如浏览器/小程序/iOS/android） 统一使用 websocket 连接 `ImServer`；
 
 `ImServer` 根据 clientId 分区管理 websocket 连接，`ImServer` 支持群集部署；
 
