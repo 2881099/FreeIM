@@ -115,22 +115,23 @@ ajax('/prev-connect-imserver', function(data) {
 
 `ImServer` 订阅 Redis channel，收到消息后向 `终端` 推送消息；
 
-1、缓解了并发推送消息过多的问题；
+- 缓解了并发推送消息过多的问题；
+- 解决了连接数过多的问题；
+- 解耦了业务和通讯，架构更加清淅；
+    * `ImServer` 充当消息转发，连接维护，代码万年不变、且不需要重启维护
+    * `WebApi` 负责所有业务
 
-2、解决了连接数过多的问题；
+举例1、用户A向B发送消息：`终端`A ajax -> `WebApi` -> `ImServer` -> `终端`B websocket.onmessage；
 
-3、解耦了业务和通讯，架构更加清淅；
+举例2、获取历史聊天记录：`终端` 请求 `WebApi`(业务方) 接口，返回json(历史消息)。
 
-- `ImServer` 充当消息转发，连接维护，代码万年不变、且不需要重启维护
-- `WebApi` 负责所有业务
+举例3、A向B发文件的例子：
 
-## 发送消息
-
-业务和推送分离的设计，即 `ImServer` 只负责推送工作，`WebApi` 负责业务。
-
-用户A向B发送消息：`终端`A ajax -> `WebApi` -> `ImServer` -> `终端`B websocket.onmessage；
-
-获取历史聊天记录：`终端` 请求 `WebApi`(业务方) 接口，返回json(历史消息)。
+- A向 `WebApi` 传文件
+- `WebApi` 告诉 `ImServer`，A向B正在传文件，ImHelper.SendMessage(B, "A正在给传送文件...")
+- B收到消息，A正在给传送文件...
+- `WebApi` 文件接收完成时告诉 `ImServer`，A向B文件传输完毕，ImHelper.SendMessage(B, "A文件传输完毕（含文件链接）")
+- B收到消息，A文件传输完毕（含文件链接）
 
 FreeIM 强依赖 redis-server 组件功能：
 
@@ -162,18 +163,6 @@ IM 系统比较常用的有上线、下线，在 `ImServer` 层才能准确捕�
 此时采用 redis 发布订阅，将上线、下线等事件向指定频道发布，`WebApi`(业务方) 通过 ImHelper.EventBus 方法进行订阅捕捉。
 
 ![image](https://user-images.githubusercontent.com/16286519/62150466-a46e3980-b330-11e9-86f3-d050160f0913.png)
-
-## A向B发文件的例子
-
-1、A向 `WebApi` 传文件
-
-2、`WebApi` 告诉 `ImServer`，A向B正在传文件，ImHelper.SendMessage(B, "A正在给传送文件...")
-
-3、B收到消息，A正在给传送文件...
-
-4、`WebApi` 文件接收完成时告诉 `ImServer`，A向B文件传输完毕，ImHelper.SendMessage(B, "A文件传输完毕（含文件链接）")
-
-5、B收到消息，A文件传输完毕（含文件链接）
 
 ## 有感而发
 
