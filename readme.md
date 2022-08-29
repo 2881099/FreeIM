@@ -92,9 +92,9 @@ ajax('/prev-connect-imserver', function(data) {
 
 协议痛点：如果浏览器使用 websocket 协议，iOS 使用其他协议，协议不一致将很难维护。
 
-> 建议所有端都使用 websocket 协议，adorid/iOS/h5/小程序 全部支持 websocket 客户端。
+职责痛点：IM 的系统一般涉及【我的好友】、【我的群】、【历史消息】等等。。
 
-职责痛点：IM 的系统一般涉及【我的好友】、【我的群】、【历史消息】等等。。那么，`ImServer` 与 `WebApi`(业务方) 该保持何种关系呢？
+`ImServer` 与 `WebApi`(业务方) 该保持何种关系呢？
 
 用户A向好友B发送消息，分析一下：
 
@@ -105,15 +105,15 @@ ajax('/prev-connect-imserver', function(data) {
 
 诸如此类业务判断会很复杂，使用 `ImServer` 做业务逻辑，最终 `ImServer` 和 `终端` 都将变成巨无霸难以维护。
 
-FreeIM 设计思路如下：
+FreeIM 设计思路：
 
-`终端`（如浏览器） 使用 websocket 连接 `ImServer`；
+所有 `终端`（如浏览器/小程序/iOS/android） 使用 websocket 连接 `ImServer`；
 
 `ImServer` 根据 clientId 分区管理 websocket 连接，`ImServer` 支持群集部署；
 
 `WebApi` 使用 ImHelper 调用方法（如：SendMessage、群聊相关方法），将数据推至 Redis channel；
 
-`ImServer` 订阅 Redis channel，收到消息后向 `终端`（如浏览器）推送消息；
+`ImServer` 订阅 Redis channel，收到消息后向 `终端` 推送消息；
 
 1、缓解了并发推送消息过多的问题；
 
