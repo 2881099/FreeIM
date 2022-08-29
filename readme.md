@@ -112,9 +112,9 @@ ajax('/prev-connect-imserver', function(data) {
 
 `ImServer`（支持集群）根据 clientId 分区管理 websocket 连接；
 
-`WebApi` 使用 ImHelper 调用方法（如：SendMessage、群聊相关方法），将数据推至 Redis channel；
+`WebApi` 使用 ImHelper 调用方法（如：SendMessage、群聊相关方法），将数据推至 Redis chan；
 
-`ImServer` 订阅 Redis channel，收到消息后向 `终端` 推送消息；
+`ImServer` 订阅 Redis chan，收到消息后向 `终端` 推送消息；
 
 - 缓解了并发推送消息过多的问题；
 - 解决了连接数过多的问题；
@@ -145,12 +145,12 @@ FreeIM 强依赖 redis-server 组件功能：
 
 部署 4 个 `ImServer`：
 
-- `ImServer`1 订阅 redisChanne1
-- `ImServer`2 订阅 redisChanne2
-- `ImServer`3 订阅 redisChanne3
-- `ImServer`4 订阅 redisChanne4
+- `ImServer`1 订阅 redisChan1
+- `ImServer`2 订阅 redisChan2
+- `ImServer`3 订阅 redisChan3
+- `ImServer`4 订阅 redisChan4
 
-`WebApi`(业务方) 根据接收方的 clientId 后四位 16 进制与节点总数取模，定位到对应的 redisChannel，进行 redis->publish 操作将消息定位到相应的 `ImServer`。
+`WebApi`(业务方) 根据接收方的 clientId 后四位 16 进制与节点总数取模，定位到对应的 redisChan，进行 redis->publish 操作将消息定位到相应的 `ImServer`。
 
 每个 `ImServer` 管理着对应的终端连接，当接收到 redis 订阅消息后，向对应的终端连接推送数据。
 
