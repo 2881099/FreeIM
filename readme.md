@@ -128,9 +128,9 @@ ajax('/prev-connect-imserver', function(data) {
 举例3、A向B发文件的例子：
 
 - A向 `WebApi` 传文件
-- `WebApi` 告诉 `ImServer`，A向B正在传文件，ImHelper.SendMessage(B, "A正在给传送文件...")
+- `WebApi` 通知 `ImServer`，ImHelper.SendMessage(B, "A正在给传送文件...")
 - B收到消息，A正在给传送文件...
-- `WebApi` 文件接收完成时告诉 `ImServer`，A向B文件传输完毕，ImHelper.SendMessage(B, "A文件传输完毕（含文件链接）")
+- `WebApi` 文件接收完成时通知 `ImServer`，ImHelper.SendMessage(B, "A文件传输完毕（含文件链接）")
 - B收到消息，A文件传输完毕（含文件链接）
 
 FreeIM 强依赖 redis-server 组件功能：
