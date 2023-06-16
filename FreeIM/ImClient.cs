@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Security.Cryptography;
 
 /// <summary>
 /// im 核心类实现
@@ -104,6 +105,16 @@ public class ImClient
     public bool HasOnline(Guid clientId)
     {
         return _redis.HGet<int>($"{_redisPrefix}Online", clientId.ToString()) > 0;
+    }
+
+    /// <summary>
+    /// 强制下线
+    /// </summary>
+    /// <param name="clientId"></param>
+    public void ForceOffline(Guid clientId)
+    {
+        string server = SelectServer(clientId);
+        _redis.Publish($"{_redisPrefix}Server{server}", $"__FreeIM__(ForceOffline){clientId}");
     }
 
     /// <summary>

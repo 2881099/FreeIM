@@ -57,6 +57,12 @@
             <param name="clientId"></param>
             <returns></returns>
         </member>
+        <member name="M:ImClient.ForceOffline(System.Guid)">
+            <summary>
+            强制下线
+            </summary>
+            <param name="clientId"></param>
+        </member>
         <member name="M:ImClient.EventBus(System.Action{System.ValueTuple{System.Guid,System.String}},System.Action{System.ValueTuple{System.Guid,System.String}})">
             <summary>
             事件订阅
@@ -205,6 +211,12 @@
             <param name="clientId"></param>
             <returns></returns>
         </member>
+        <member name="M:ImHelper.ForceOffline(System.Guid)">
+            <summary>
+            强制下线
+            </summary>
+            <param name="clientId"></param>
+        </member>
         <member name="M:ImHelper.EventBus(System.Action{System.ValueTuple{System.Guid,System.String}},System.Action{System.ValueTuple{System.Guid,System.String}})">
             <summary>
             事件订阅
@@ -266,6 +278,24 @@
             <param name="senderClientId">发送者的客户端id</param>
             <param name="chan">群聊频道名</param>
             <param name="message">消息</param>
+        </member>
+        <member name="M:FreeImServerExtenssions.UseFreeImServer(Microsoft.AspNetCore.Builder.IApplicationBuilder,ImServerOptions)">
+            <summary>
+            启用 ImServer 服务端
+            </summary>
+            <param name="app"></param>
+            <param name="options"></param>
+            <returns></returns>
+        </member>
+        <member name="T:ImServerOptions">
+            <summary>
+            im 核心类实现的配置所需
+            </summary>
+        </member>
+        <member name="P:ImServerOptions.Server">
+            <summary>
+            设置服务名称，它应该是 servers 内的一个
+            </summary>
         </member>
     </members>
 </doc>

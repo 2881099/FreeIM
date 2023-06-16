@@ -46,6 +46,7 @@ public void Configure(IApplicationBuilder app)
 | SendMessage | (发送者, 接收者, 消息内容, 是否回执) | 发送消息 |
 | GetClientListByOnline | - | 返回所有在线clientId |
 | HasOnline | clientId | 判断客户端是否在线 |
+| ForceOffline | clientId | 强制下线 |
 | EventBus | (上线委托, 离线委托) | socket上线与下线事件 |
 
 | 频道 | 参数 | 描述 |

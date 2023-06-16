@@ -124,8 +124,20 @@ class ImServer : ImClient
     {
         try
         {
+            var msgtxt = msg as string;
+            if (msgtxt.StartsWith("__FreeIM__(ForceOffline)"))
+            {
+                if (Guid.TryParse(msgtxt.Substring(24), out var clientId) && _clients.TryRemove(clientId, out var oldclients))
+                    foreach (var oldcli in oldclients)
+                    {
+                        try { oldcli.Value.socket.CloseAsync(WebSocketCloseStatus.EndpointUnavailable, "disconnect", CancellationToken.None).GetAwaiter().GetResult(); } catch { }
+                        try { oldcli.Value.socket.Abort(); } catch { }
+                        try { oldcli.Value.socket.Dispose(); } catch { }
+                    }
+                return;
+            }
             var data = JsonConvert.DeserializeObject<(Guid senderClientId, Guid[] receiveClientId, string content, bool receipt)>(msg as string);
-            Console.WriteLine($"收到消息：{data.content}" + (data.receipt ? "【需回执】" : ""));
+            //Console.WriteLine($"收到消息：{data.content}" + (data.receipt ? "【需回执】" : ""));
 
             var outgoing = new ArraySegment<byte>(Encoding.UTF8.GetBytes(data.content));
             foreach (var clientId in data.receiveClientId)
@@ -161,7 +173,7 @@ class ImServer : ImClient
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"订阅方法出错了：{ex.Message}");
+            Console.WriteLine($"FreeIM.ImServer 订阅方法出错了：{ex.Message}");
         }
     }
 }

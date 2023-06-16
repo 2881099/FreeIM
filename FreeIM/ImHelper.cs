@@ -48,6 +48,11 @@ public static class ImHelper
     /// <param name="clientId"></param>
     /// <returns></returns>
     public static bool HasOnline(Guid clientId) => Instance.HasOnline(clientId);
+    /// <summary>
+    /// 强制下线
+    /// </summary>
+    /// <param name="clientId"></param>
+    public static void ForceOffline(Guid clientId) => Instance.ForceOffline(clientId);
 
     /// <summary>
     /// 事件订阅

@@ -30,6 +30,15 @@ namespace web.Controllers
                 websocketId = websocketId
             };
         }
+        [HttpGet("offline")]
+        public object offline([FromQuery] Guid websocketId)
+        {
+            ImHelper.ForceOffline(websocketId);
+            return new
+            {
+                code = 0
+            };
+        }
 
         /// <summary>
         /// 群聊，获取群列表
