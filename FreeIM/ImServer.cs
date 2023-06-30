@@ -161,7 +161,17 @@ class ImServer : ImClient
                 if (clientId == data.senderClientId && sockarray.Length <= 1) continue;
 
                 foreach (var sh in sockarray)
-                    sh.socket.SendAsync(outgoing, WebSocketMessageType.Text, true, CancellationToken.None);
+                    sh.socket.SendAsync(outgoing, WebSocketMessageType.Text, true, CancellationToken.None)
+                        .ContinueWith(async (t, state) =>
+                        {
+                            if (t.Exception != null)
+                            {
+                                var ws = state as WebSocket;
+                                try { await ws.CloseAsync(WebSocketCloseStatus.EndpointUnavailable, "disconnect", CancellationToken.None); } catch { }
+                                try { ws.Abort(); } catch { }
+                                try { ws.Dispose(); } catch { }
+                            }
+                        }, sh.socket);
 
                 if (data.senderClientId != Guid.Empty && clientId != data.senderClientId && data.receipt)
                     SendMessage(clientId, new[] { data.senderClientId }, new
