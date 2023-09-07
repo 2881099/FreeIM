@@ -73,7 +73,7 @@
                             gsocket = null;
                             clearTimeout(gsocketTimeId);
                             gsocketTimeId = setTimeout(function () {
-                                _self.connectWebsocket.call(_self, chan);
+                                _self.connectWebsocket.call(_self);
                             }, 5000);
                         };
                         gsocket.onmessage = function (e) {
@@ -90,7 +90,7 @@
                             gsocket = null;
                             clearTimeout(gsocketTimeId);
                             gsocketTimeId = setTimeout(function () {
-                                _self.connectWebsocket.call(_self, chan);
+                                _self.connectWebsocket.call(_self);
                             }, 5000);
                         };
                     }, function (err) {
