@@ -19,7 +19,7 @@ public void Configure(IApplicationBuilder app)
     });
 }
 ```
-> 一套永远不需要迭代更新的 `ImServer` 服务端，支持 .NET6.0、.NETCore2.1+、NETStandard2.0
+> 一套永远不需要迭代更新的 `ImServer` 服务端，支持 .NET8.0 AOT 发布（C++运行时）。
 
 ## WebApi 业务端
 

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.WebSockets;
 using System.Text;
@@ -136,7 +137,7 @@ class ImServer : ImClient
                     }
                 return;
             }
-            var data = JsonConvert.DeserializeObject<(Guid senderClientId, Guid[] receiveClientId, string content, bool receipt)>(msg as string);
+            var data = JsonConvert.DeserializeObject<(Guid senderClientId, List<Guid> receiveClientId, string content, bool receipt)>(msgtxt);
             //Console.WriteLine($"收到消息：{data.content}" + (data.receipt ? "【需回执】" : ""));
 
             var outgoing = new ArraySegment<byte>(Encoding.UTF8.GetBytes(data.content));
@@ -183,7 +184,7 @@ class ImServer : ImClient
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"FreeIM.ImServer 订阅方法出错了：{ex.Message}");
+            Console.WriteLine($"FreeIM.ImServer 订阅方法出错了：{ex.Message}\r\n{ex.StackTrace}");
         }
     }
 }

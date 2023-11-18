@@ -1,0 +1,15 @@
+﻿<Directives>
+	<Application>
+		<Assembly Name="FreeIM">
+			<!--<Type Name="FreeIM.Dto.SendMessagePublishDto" Dynamic="Required All" />-->
+		</Assembly>
+
+		<Assembly Name="System.Private.CoreLib">
+			<Type Name="System.Collections.Generic.List`1[[System.Guid,System.Private.CoreLib]]" Dynamic="Required All" />
+		</Assembly>
+		<Assembly Name="System.Runtime">
+			<Type Name="System.ValueTuple`4[[System.Guid,System.Private.CoreLib], [System.Collections.Generic.List`1[[System.Guid,System.Private.CoreLib]],System.Private.CoreLib], [System.String,System.Private.CoreLib], [System.Boolean,System.Private.CoreLib]]" Dynamic="Required All" />
+			<Type Name="System.ValueTuple`2[[System.Guid,System.Private.CoreLib], [System.String,System.Private.CoreLib]]" Dynamic="Required All" />
+		</Assembly>
+	</Application>
+</Directives>

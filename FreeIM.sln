@@ -12,7 +12,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FreeIM", "FreeIM\FreeIM.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApi", "WebApi\WebApi.csproj", "{1B8ADBB7-D9E2-4FDC-B32C-A596C7055D6B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IMServer", "ImServer\ImServer.csproj", "{FA7AE0A9-0B00-41EF-BF06-C2E5371BB671}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImServer", "ImServer\ImServer.csproj", "{FA7AE0A9-0B00-41EF-BF06-C2E5371BB671}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImServer_aot", "ImServer_aot\ImServer_aot.csproj", "{51542F4A-5A48-4FEF-8436-C1FD6B06B988}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,6 +34,10 @@ Global
 		{FA7AE0A9-0B00-41EF-BF06-C2E5371BB671}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FA7AE0A9-0B00-41EF-BF06-C2E5371BB671}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FA7AE0A9-0B00-41EF-BF06-C2E5371BB671}.Release|Any CPU.Build.0 = Release|Any CPU
+		{51542F4A-5A48-4FEF-8436-C1FD6B06B988}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51542F4A-5A48-4FEF-8436-C1FD6B06B988}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51542F4A-5A48-4FEF-8436-C1FD6B06B988}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51542F4A-5A48-4FEF-8436-C1FD6B06B988}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
