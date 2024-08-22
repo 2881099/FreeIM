@@ -114,6 +114,10 @@ public static class ImHelper
     /// <param name="chan">群聊频道名</param>
     /// <param name="message">消息</param>
 	public static void SendChanMessage(Guid senderClientId, string chan, object message) => Instance.SendChanMessage(senderClientId, chan, message);
-
+    /// <summary>
+    /// 发送广播消息
+    /// </summary>
+    /// <param name="message">消息</param>
+    public static void SendBroadcastMessage(object message) => SendBroadcastMessage(message);
     #endregion
 }

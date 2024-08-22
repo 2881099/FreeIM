@@ -79,12 +79,28 @@ namespace web.Controllers
         [HttpPost("send-channelmsg")]
         public object sendChannelmsg([FromForm] Guid websocketId, [FromForm] string channel, [FromForm] string message)
         {
-            ImHelper.SendChanMessage(websocketId, channel, message);
+            ImHelper.SendChanMessage(Guid.Empty, channel, message);
             return new
             {
                 code = 0
             };
         }
+
+        /// <summary>
+        /// 广播消息
+        /// </summary>
+        /// <param name="content">发送内容</param>
+        /// <returns></returns>
+        [HttpPost("send-broadcast")]
+        public object sendChannelmsg([FromForm] string message)
+        {
+            ImHelper.SendChanMessage(Guid.Empty, null, message);
+            return new
+            {
+                code = 0
+            };
+        }
+
         /// <summary>
         /// 单聊
         /// </summary>

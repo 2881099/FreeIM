@@ -144,6 +144,7 @@ public class ImClient
     /// <param name="chan">群聊频道名</param>
     public void JoinChan(Guid clientId, string chan)
     {
+        if (string.IsNullOrEmpty(chan)) return;
         using (var pipe = _redis.StartPipe())
         {
             pipe.HSet($"{_redisPrefix}Chan{chan}", clientId.ToString(), 0);
@@ -178,7 +179,8 @@ public class ImClient
     /// <returns></returns>
     public Guid[] GetChanClientList(string chan)
     {
-        return _redis.HKeys($"{_redisPrefix}Chan{chan}").Select(a => Guid.Parse(a)).ToArray();
+        if (string.IsNullOrEmpty(chan)) return new Guid[0];
+        return _redis.HKeys($"{_redisPrefix}Chan{chan}").Select(a => Guid.TryParse(a, out var tryuuid) ? tryuuid : Guid.Empty).Where(a => a != Guid.Empty).ToArray();
     }
     /// <summary>
     /// 清理群聊频道的离线客户端（测试）
@@ -186,6 +188,7 @@ public class ImClient
     /// <param name="chan">群聊频道名</param>
     public void ClearChanClient(string chan)
     {
+        if (string.IsNullOrEmpty(chan)) return;
         var websocketIds = _redis.HKeys($"{_redisPrefix}Chan{chan}");
         var offline = new List<string>();
         var span = websocketIds.AsSpan();
@@ -239,20 +242,30 @@ public class ImClient
     /// <returns>在线人数</returns>
     public long GetChanOnline(string chan)
     {
+        if (string.IsNullOrEmpty(chan)) return 0;
         return _redis.HGet<long>($"{_redisPrefix}ListChan", chan);
     }
 
     /// <summary>
-    /// 发送群聊消息，所有在线的用户将收到消息
+    /// 发送群聊消息，在线的用户将收到消息
     /// </summary>
     /// <param name="senderClientId">发送者的客户端id</param>
     /// <param name="chan">群聊频道名</param>
     /// <param name="message">消息</param>
     public void SendChanMessage(Guid senderClientId, string chan, object message)
     {
-        var websocketIds = _redis.HKeys($"{_redisPrefix}Chan{chan}");
-        SendMessage(Guid.Empty, websocketIds.Where(a => !string.IsNullOrEmpty(a)).Select(a => Guid.TryParse(a, out var tryuuid) ? tryuuid : Guid.Empty).ToArray(), message);
+        var sendArgs = _servers.Select(server => new ImSendEventArgs(server, senderClientId, message, false) { Chan = chan });
+        var messageJson = JsonConvert.SerializeObject(message);
+        foreach (var arg in sendArgs)
+        {
+            OnSend?.Invoke(this, arg);
+            _redis.Publish($"{_redisPrefix}Server{arg.Server}", $"__FreeIM__(ChanMessage){JsonConvert.SerializeObject((senderClientId, chan, messageJson))}");
+        }
     }
-
+    /// <summary>
+    /// 发送广播消息
+    /// </summary>
+    /// <param name="message">消息</param>
+    public void SendBroadcastMessage(object message) => SendChanMessage(Guid.Empty, null, message);
     #endregion
 }

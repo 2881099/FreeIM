@@ -137,11 +137,26 @@ class ImServer : ImClient
                     }
                 return;
             }
-            var data = JsonConvert.DeserializeObject<(Guid senderClientId, List<Guid> receiveClientId, string content, bool receipt)>(msgtxt);
-            //Console.WriteLine($"收到消息：{data.content}" + (data.receipt ? "【需回执】" : ""));
+            IEnumerable<Guid> receiveClientIds = null;
+            (Guid senderClientId, List<Guid>, string content, bool receipt) data;
+            if (msgtxt.StartsWith("__FreeIM__(ChanMessage)"))
+            {
+                var chanData = JsonConvert.DeserializeObject<(Guid senderClientId, string receiveChan, string content)>(msgtxt.Substring(23));
+                data.senderClientId = chanData.senderClientId;
+                data.content = chanData.content;
+                data.receipt = false;
+                receiveClientIds = string.IsNullOrEmpty(chanData.receiveChan) ? _clients.Keys :
+                    _redis.HKeys($"{_redisPrefix}Chan{chanData.receiveChan}").Select(a => Guid.TryParse(a, out var tryuuid) ? tryuuid : Guid.Empty).Where(a => a != Guid.Empty).ToList();
+            }
+            else
+            {
+                data = JsonConvert.DeserializeObject<(Guid senderClientId, List<Guid>, string content, bool receipt)>(msgtxt);
+                receiveClientIds = data.Item2;
+                //Console.WriteLine($"收到消息：{data.content}" + (data.receipt ? "【需回执】" : ""));
+            }
 
             var outgoing = new ArraySegment<byte>(Encoding.UTF8.GetBytes(data.content));
-            foreach (var clientId in data.receiveClientId)
+            foreach (var clientId in receiveClientIds)
             {
                 if (_clients.TryGetValue(clientId, out var wslist) == false)
                 {

@@ -21,16 +21,22 @@
         <hr>
         <div v-if="currentChannel.chan">
             <h1>{{currentChannel.chan}}</h1>
-            <div v-for="msg in currentChannel.msgs" style="margin-bottom:9px;">
-                <div v-if="msg.msg.type == 'welcome'">欢迎 {{msg.senderNick||msg.sender}} 加入</div>
-                <div v-else-if="msg.msg.type == 'changenick'">{{msg.msg.oldnick||msg.sender}} 改名为 {{msg.msg.newnick||msg.sender}}</div>
-                <div v-else>
-                    <div style="color:#aaa;">{{msg.senderNick||msg.sender}} {{new Date(msg.time)}}</div>
-                    <div>{{msg.msg.content}}</div>
-                </div>
+        </div>
+
+        <div v-for="msg in msgs" style="margin-bottom:9px;">
+            <div v-if="msg.msg.type == 'welcome'">欢迎 {{msg.senderNick||msg.sender}} 加入</div>
+            <div v-else-if="msg.msg.type == 'changenick'">{{msg.msg.oldnick||msg.sender}} 改名为 {{msg.msg.newnick||msg.sender}}</div>
+            <div v-else>
+                <div style="color:#aaa;">{{msg.senderNick||msg.sender}} {{new Date(msg.time)}}</div>
+                <div>{{msg.msg.content}}</div>
             </div>
+        </div>
+
+        <div v-if="currentChannel.chan">
             <input type="text" style="width:300px;" v-model="inputChannelMsg.content" />
             <input type="button" value="发送" @click="if(!inputChannelMsg.content)return alert('请输入内容'); sendChannelMsg(inputChannelMsg);inputChannelMsg.content=''" />
+
+            <input type="button" value="广播发送（所有在线用户）" @click="if(!inputChannelMsg.content)return alert('请输入内容'); sendBroadcastMsg(inputChannelMsg);inputChannelMsg.content=''" />
         </div>
 
     </div>
@@ -45,7 +51,8 @@
                 id: null,
                 nick: null,
                 channels: [],
-                currentChannel: { chan: '', msgs: [] },
+                msgs: [],
+                currentChannel: { chan: '' },
                 inputChannelMsg: { type: 'text', content: '' }
             },
             created: function () {
@@ -101,7 +108,10 @@
                     var _self = this;
                     msg = JSON.parse(msg);
                     if (msg.type == 'chanmsg') { //群聊天消息
-                        _self.currentChannel.msgs.push(msg);
+                        _self.msgs.push(msg);
+                    }
+                    if (msg.type == 'broadcastmsg') { //广播消息
+                        _self.msgs.push(msg);
                     }
                 },
                 getChannels: function () {
@@ -114,7 +124,7 @@
                     var _self = this;
                     ajax('/ws/subscr-channel', { websocketid: _self.id, channel: chan }, function (rt) {
                         _self.currentChannel.chan = chan;
-                        _self.currentChannel.msgs.splice(0, _self.currentChannel.msgs.length);
+                        _self.msgs.splice(0, _self.msgs.length);
                         _self.sendChannelMsg({ type: 'welcome' });
                     });
                 },
@@ -127,6 +137,13 @@
                     var _self = this;
                     var data = { type: 'chanmsg', sender: _self.id, senderNick: _self.nick, chan: _self.currentChannel.chan, time: new Date().getTime(), msg: msg, };
                     ajax('/ws/send-channelmsg', { websocketId: _self.id, channel: _self.currentChannel.chan, message: JSON.stringify(data) }, function (rt) {
+
+                    });
+                },
+                sendBroadcastMsg: function (msg) {
+                    var _self = this;
+                    var data = { type: 'broadcastmsg', sender: _self.id, senderNick: _self.nick, chan: _self.currentChannel.chan, time: new Date().getTime(), msg: msg, };
+                    ajax('/ws/send-broadcast', { websocketId: _self.id, channel: _self.currentChannel.chan, message: JSON.stringify(data) }, function (rt) {
 
                     });
                 },

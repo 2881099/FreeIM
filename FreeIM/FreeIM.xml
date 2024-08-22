@@ -119,10 +119,16 @@
         </member>
         <member name="M:ImClient.SendChanMessage(System.Guid,System.String,System.Object)">
             <summary>
-            发送群聊消息，所有在线的用户将收到消息
+            发送群聊消息，在线的用户将收到消息
             </summary>
             <param name="senderClientId">发送者的客户端id</param>
             <param name="chan">群聊频道名</param>
+            <param name="message">消息</param>
+        </member>
+        <member name="M:ImClient.SendBroadcastMessage(System.Object)">
+            <summary>
+            发送广播消息
+            </summary>
             <param name="message">消息</param>
         </member>
         <member name="T:ImClientOptions">
@@ -277,6 +283,12 @@
             </summary>
             <param name="senderClientId">发送者的客户端id</param>
             <param name="chan">群聊频道名</param>
+            <param name="message">消息</param>
+        </member>
+        <member name="M:ImHelper.SendBroadcastMessage(System.Object)">
+            <summary>
+            发送广播消息
+            </summary>
             <param name="message">消息</param>
         </member>
         <member name="M:FreeImServerExtenssions.UseFreeImServer(Microsoft.AspNetCore.Builder.IApplicationBuilder,ImServerOptions)">

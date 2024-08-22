@@ -34,6 +34,7 @@ public class ImSendEventArgs : EventArgs
     /// 接收者的客户端id
     /// </summary>
     public List<Guid> ReceiveClientId { get; } = new List<Guid>();
+    public string Chan { get; internal set; }
     /// <summary>
     /// imServer 服务器节点
     /// </summary>
