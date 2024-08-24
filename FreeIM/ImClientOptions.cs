@@ -1,9 +1,6 @@
 ﻿using FreeRedis;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
 
 /// <summary>
 /// im 核心类实现的配置所需
@@ -11,7 +8,7 @@ using System.Linq;
 public class ImClientOptions
 {
     /// <summary>
-    /// CSRedis 对象，用于存储数据和发送消息
+    /// 用于存储数据和发送消息
     /// </summary>
     public RedisClient Redis { get; set; }
     /// <summary>
@@ -29,11 +26,11 @@ public class ImSendEventArgs : EventArgs
     /// <summary>
     /// 发送者的客户端id
     /// </summary>
-    public Guid SenderClientId { get; }
+    public long SenderClientId { get; }
     /// <summary>
     /// 接收者的客户端id
     /// </summary>
-    public List<Guid> ReceiveClientId { get; } = new List<Guid>();
+    public List<long> ReceiveClientId { get; } = new List<long>();
     public string Chan { get; internal set; }
     /// <summary>
     /// imServer 服务器节点
@@ -48,7 +45,7 @@ public class ImSendEventArgs : EventArgs
     /// </summary>
     public bool Receipt { get; }
 
-    internal ImSendEventArgs(string server, Guid senderClientId, object message, bool receipt = false)
+    internal ImSendEventArgs(string server, long senderClientId, object message, bool receipt = false)
     {
         this.Server = server;
         this.SenderClientId = senderClientId;

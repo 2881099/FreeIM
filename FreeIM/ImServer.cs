@@ -62,14 +62,14 @@ class ImServer : ImClient
     }
 
     const int BufferSize = 4096;
-    ConcurrentDictionary<Guid, ConcurrentDictionary<Guid, ImServerClient>> _clients = new ConcurrentDictionary<Guid, ConcurrentDictionary<Guid, ImServerClient>>();
+    ConcurrentDictionary<long, ConcurrentDictionary<Guid, ImServerClient>> _clients = new ConcurrentDictionary<long, ConcurrentDictionary<Guid, ImServerClient>>();
 
     class ImServerClient
     {
         public WebSocket socket;
-        public Guid clientId;
+        public long clientId;
 
-        public ImServerClient(WebSocket socket, Guid clientId)
+        public ImServerClient(WebSocket socket, long clientId)
         {
             this.socket = socket;
             this.clientId = clientId;
@@ -85,7 +85,7 @@ class ImServer : ImClient
         if (string.IsNullOrEmpty(token_value))
             throw new Exception("授权错误：用户需通过 ImHelper.PrevConnectServer 获得包含 token 的连接");
 
-        var data = JsonConvert.DeserializeObject<(Guid clientId, string clientMetaData)>(token_value);
+        var data = JsonConvert.DeserializeObject<(long clientId, string clientMetaData)>(token_value);
 
         var socket = await context.WebSockets.AcceptWebSocketAsync();
         var cli = new ImServerClient(socket, data.clientId);
@@ -128,7 +128,7 @@ class ImServer : ImClient
             var msgtxt = msg as string;
             if (msgtxt.StartsWith("__FreeIM__(ForceOffline)"))
             {
-                if (Guid.TryParse(msgtxt.Substring(24), out var clientId) && _clients.TryRemove(clientId, out var oldclients))
+                if (long.TryParse(msgtxt.Substring(24), out var clientId) && _clients.TryRemove(clientId, out var oldclients))
                     foreach (var oldcli in oldclients)
                     {
                         try { oldcli.Value.socket.CloseAsync(WebSocketCloseStatus.EndpointUnavailable, "disconnect", CancellationToken.None).GetAwaiter().GetResult(); } catch { }
@@ -137,20 +137,20 @@ class ImServer : ImClient
                     }
                 return;
             }
-            IEnumerable<Guid> receiveClientIds = null;
-            (Guid senderClientId, List<Guid>, string content, bool receipt) data;
+            IEnumerable<long> receiveClientIds = null;
+            (long senderClientId, List<long>, string content, bool receipt) data;
             if (msgtxt.StartsWith("__FreeIM__(ChanMessage)"))
             {
-                var chanData = JsonConvert.DeserializeObject<(Guid senderClientId, string receiveChan, string content)>(msgtxt.Substring(23));
+                var chanData = JsonConvert.DeserializeObject<(long senderClientId, string receiveChan, string content)>(msgtxt.Substring(23));
                 data.senderClientId = chanData.senderClientId;
                 data.content = chanData.content;
                 data.receipt = false;
                 receiveClientIds = string.IsNullOrEmpty(chanData.receiveChan) ? _clients.Keys :
-                    _redis.HKeys($"{_redisPrefix}Chan{chanData.receiveChan}").Select(a => Guid.TryParse(a, out var tryuuid) ? tryuuid : Guid.Empty).Where(a => a != Guid.Empty).ToList();
+                    _redis.HKeys($"{_redisPrefix}Chan{chanData.receiveChan}").Select(a => long.TryParse(a, out var tryval) ? tryval : 0).Where(a => a != 0).ToList();
             }
             else
             {
-                data = JsonConvert.DeserializeObject<(Guid senderClientId, List<Guid>, string content, bool receipt)>(msgtxt);
+                data = JsonConvert.DeserializeObject<(long senderClientId, List<long>, string content, bool receipt)>(msgtxt);
                 receiveClientIds = data.Item2;
                 //Console.WriteLine($"收到消息：{data.content}" + (data.receipt ? "【需回执】" : ""));
             }
@@ -161,7 +161,7 @@ class ImServer : ImClient
                 if (_clients.TryGetValue(clientId, out var wslist) == false)
                 {
                     //Console.WriteLine($"websocket{clientId} 离线了，{data.content}" + (data.receipt ? "【需回执】" : ""));
-                    if (data.senderClientId != Guid.Empty && clientId != data.senderClientId && data.receipt)
+                    if (data.senderClientId != 0 && clientId != data.senderClientId && data.receipt)
                         SendMessage(clientId, new[] { data.senderClientId }, new
                         {
                             data.content,
@@ -189,7 +189,7 @@ class ImServer : ImClient
                             }
                         }, sh.socket);
 
-                if (data.senderClientId != Guid.Empty && clientId != data.senderClientId && data.receipt)
+                if (data.senderClientId != 0 && clientId != data.senderClientId && data.receipt)
                     SendMessage(clientId, new[] { data.senderClientId }, new
                     {
                         data.content,

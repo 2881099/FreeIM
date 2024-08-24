@@ -20,14 +20,14 @@
             </summary>
             <param name="options"></param>
         </member>
-        <member name="M:ImClient.SelectServer(System.Guid)">
+        <member name="M:ImClient.SelectServer(System.Int64)">
             <summary>
-            负载分区规则：取clientId后四位字符，转成10进制数字0-65535，求模
+            负载分区规则：clientId求模
             </summary>
             <param name="clientId">客户端id</param>
             <returns></returns>
         </member>
-        <member name="M:ImClient.PrevConnectServer(System.Guid,System.String)">
+        <member name="M:ImClient.PrevConnectServer(System.Int64,System.String)">
             <summary>
             ImServer 连接前的负载、授权，返回 ws 目标地址，使用该地址连接 websocket 服务端
             </summary>
@@ -35,7 +35,7 @@
             <param name="clientMetaData">客户端相关信息，比如ip</param>
             <returns>websocket 地址：ws://xxxx/ws?token=xxx</returns>
         </member>
-        <member name="M:ImClient.SendMessage(System.Guid,System.Collections.Generic.IEnumerable{System.Guid},System.Object,System.Boolean)">
+        <member name="M:ImClient.SendMessage(System.Int64,System.Collections.Generic.IEnumerable{System.Int64},System.Object,System.Boolean)">
             <summary>
             向指定的多个客户端id发送消息
             </summary>
@@ -50,39 +50,53 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:ImClient.HasOnline(System.Guid)">
+        <member name="M:ImClient.HasOnline(System.Int64)">
             <summary>
             判断客户端是否在线
             </summary>
             <param name="clientId"></param>
             <returns></returns>
         </member>
-        <member name="M:ImClient.ForceOffline(System.Guid)">
+        <member name="M:ImClient.HasOnline(System.Collections.Generic.IEnumerable{System.Int64})">
+            <summary>
+            判断客户端是否在线
+            </summary>
+            <param name="clientIds"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ImClient.ForceOffline(System.Int64)">
             <summary>
             强制下线
             </summary>
             <param name="clientId"></param>
         </member>
-        <member name="M:ImClient.EventBus(System.Action{System.ValueTuple{System.Guid,System.String}},System.Action{System.ValueTuple{System.Guid,System.String}})">
+        <member name="M:ImClient.EventBus(System.Action{System.ValueTuple{System.Int64,System.String}},System.Action{System.ValueTuple{System.Int64,System.String}})">
             <summary>
             事件订阅
             </summary>
             <param name="online">上线</param>
             <param name="offline">下线</param>
         </member>
-        <member name="M:ImClient.JoinChan(System.Guid,System.String)">
+        <member name="M:ImClient.JoinChan(System.Int64,System.String[])">
             <summary>
             加入群聊频道，每次上线都必须重新加入
             </summary>
             <param name="clientId">客户端id</param>
-            <param name="chan">群聊频道名</param>
+            <param name="chans">群聊频道名</param>
         </member>
-        <member name="M:ImClient.LeaveChan(System.Guid,System.String[])">
+        <member name="M:ImClient.LeaveChan(System.Int64,System.String[])">
             <summary>
             离开群聊频道
             </summary>
             <param name="clientId">客户端id</param>
             <param name="chans">群聊频道名</param>
+        </member>
+        <member name="M:ImClient.LeaveChan(System.String,System.Int64[])">
+            <summary>
+            离开群聊频道
+            </summary>
+            <param name="chan">群聊频道名</param>
+            <param name="clientIds">客户端id</param>
         </member>
         <member name="M:ImClient.GetChanClientList(System.String)">
             <summary>
@@ -103,7 +117,7 @@
             </summary>
             <returns>频道名和在线人数</returns>
         </member>
-        <member name="M:ImClient.GetChanListByClientId(System.Guid)">
+        <member name="M:ImClient.GetChanListByClientId(System.Int64)">
             <summary>
             获取用户参与的所有群聊频道
             </summary>
@@ -117,7 +131,7 @@
             <param name="chan">群聊频道名</param>
             <returns>在线人数</returns>
         </member>
-        <member name="M:ImClient.SendChanMessage(System.Guid,System.String,System.Object)">
+        <member name="M:ImClient.SendChanMessage(System.Int64,System.String,System.Object)">
             <summary>
             发送群聊消息，在线的用户将收到消息
             </summary>
@@ -138,7 +152,7 @@
         </member>
         <member name="P:ImClientOptions.Redis">
             <summary>
-            CSRedis 对象，用于存储数据和发送消息
+            用于存储数据和发送消息
             </summary>
         </member>
         <member name="P:ImClientOptions.Servers">
@@ -187,7 +201,7 @@
             </summary>
             <param name="options"></param>
         </member>
-        <member name="M:ImHelper.PrevConnectServer(System.Guid,System.String)">
+        <member name="M:ImHelper.PrevConnectServer(System.Int64,System.String)">
             <summary>
             ImServer 连接前的负载、授权，返回 ws 目标地址，使用该地址连接 websocket 服务端
             </summary>
@@ -195,7 +209,7 @@
             <param name="clientMetaData">客户端相关信息，比如ip</param>
             <returns>websocket 地址：ws://xxxx/ws?token=xxx</returns>
         </member>
-        <member name="M:ImHelper.SendMessage(System.Guid,System.Collections.Generic.IEnumerable{System.Guid},System.Object,System.Boolean)">
+        <member name="M:ImHelper.SendMessage(System.Int64,System.Collections.Generic.IEnumerable{System.Int64},System.Object,System.Boolean)">
             <summary>
             向指定的多个客户端id发送消息
             </summary>
@@ -210,39 +224,53 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:ImHelper.HasOnline(System.Guid)">
+        <member name="M:ImHelper.HasOnline(System.Int64)">
             <summary>
             判断客户端是否在线
             </summary>
             <param name="clientId"></param>
             <returns></returns>
         </member>
-        <member name="M:ImHelper.ForceOffline(System.Guid)">
+        <member name="M:ImHelper.HasOnline(System.Collections.Generic.IEnumerable{System.Int64})">
+            <summary>
+            判断客户端是否在线（多个）
+            </summary>
+            <param name="clientIds"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ImHelper.ForceOffline(System.Int64)">
             <summary>
             强制下线
             </summary>
             <param name="clientId"></param>
         </member>
-        <member name="M:ImHelper.EventBus(System.Action{System.ValueTuple{System.Guid,System.String}},System.Action{System.ValueTuple{System.Guid,System.String}})">
+        <member name="M:ImHelper.EventBus(System.Action{System.ValueTuple{System.Int64,System.String}},System.Action{System.ValueTuple{System.Int64,System.String}})">
             <summary>
             事件订阅
             </summary>
             <param name="online">上线</param>
             <param name="offline">下线</param>
         </member>
-        <member name="M:ImHelper.JoinChan(System.Guid,System.String)">
+        <member name="M:ImHelper.JoinChan(System.Int64,System.String[])">
             <summary>
             加入群聊频道，每次上线都必须重新加入
             </summary>
             <param name="clientId">客户端id</param>
-            <param name="chan">群聊频道名</param>
+            <param name="chans">群聊频道名</param>
         </member>
-        <member name="M:ImHelper.LeaveChan(System.Guid,System.String[])">
+        <member name="M:ImHelper.LeaveChan(System.Int64,System.String[])">
             <summary>
             离开群聊频道
             </summary>
             <param name="clientId">客户端id</param>
             <param name="chans">群聊频道名</param>
+        </member>
+        <member name="M:ImHelper.LeaveChan(System.String,System.Int64[])">
+            <summary>
+            离开群聊频道
+            </summary>
+            <param name="chan">群聊频道名</param>
+            <param name="clientIds">客户端id</param>
         </member>
         <member name="M:ImHelper.GetChanClientList(System.String)">
             <summary>
@@ -263,7 +291,7 @@
             </summary>
             <returns>频道名和在线人数</returns>
         </member>
-        <member name="M:ImHelper.GetChanListByClientId(System.Guid)">
+        <member name="M:ImHelper.GetChanListByClientId(System.Int64)">
             <summary>
             获取用户参与的所有群聊频道
             </summary>
@@ -277,7 +305,7 @@
             <param name="chan">群聊频道名</param>
             <returns>在线人数</returns>
         </member>
-        <member name="M:ImHelper.SendChanMessage(System.Guid,System.String,System.Object)">
+        <member name="M:ImHelper.SendChanMessage(System.Int64,System.String,System.Object)">
             <summary>
             发送群聊消息，所有在线的用户将收到消息
             </summary>

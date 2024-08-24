@@ -1,4 +1,11 @@
-﻿FreeIM 使用 websocket 协议实现简易、高性能（单机支持5万+连接）、集群即时通讯组件，支持点对点通讯、群聊通讯、上线下线事件消息等众多实用性功能。 `ImCore` 已正式改名为 `FreeIM`。
+﻿# FreeIM v2.0
+
+ - 调整：已将 ClientId Guid 改为 long；
+ - 修复：JoinChan/LeaveChan 数量统计问题；
+ - 增加：SendBroadcastMessage 广播消息；
+ - 优化：SendChanMessage 性能；
+
+FreeIM 使用 websocket 协议实现简易、高性能（单机支持5万+连接）、集群即时通讯组件，支持点对点通讯、群聊通讯、上线下线事件消息等众多实用性功能。 `ImCore` 已正式改名为 `FreeIM`。
 
 使用场景：好友聊天、群聊天、直播间、实时评论区、游戏。
 
