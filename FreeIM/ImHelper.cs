@@ -130,6 +130,6 @@ public static class ImHelper
     /// 发送广播消息
     /// </summary>
     /// <param name="message">消息</param>
-    public static void SendBroadcastMessage(object message) => SendBroadcastMessage(message);
+    public static void SendBroadcastMessage(object message) => Instance.SendBroadcastMessage(message);
     #endregion
 }
