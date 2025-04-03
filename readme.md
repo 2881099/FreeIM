@@ -1,4 +1,4 @@
-﻿# FreeIM v2.0
+﻿# FreeIM v2.0.0
 
  - 调整：已将 ClientId Guid 改为 long；
  - 修复：JoinChan/LeaveChan 数量统计问题；
