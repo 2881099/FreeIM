@@ -14,7 +14,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApi", "WebApi\WebApi.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImServer", "ImServer\ImServer.csproj", "{FA7AE0A9-0B00-41EF-BF06-C2E5371BB671}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImServer_aot", "ImServer_aot\ImServer_aot.csproj", "{51542F4A-5A48-4FEF-8436-C1FD6B06B988}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImServer_aot", "ImServer_aot\ImServer_aot.csproj", "{51542F4A-5A48-4FEF-8436-C1FD6B06B988}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FreeRedis", "..\FreeRedis\src\FreeRedis\FreeRedis.csproj", "{B47709B6-6210-416A-B0A2-68AFE38562B7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,6 +40,10 @@ Global
 		{51542F4A-5A48-4FEF-8436-C1FD6B06B988}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{51542F4A-5A48-4FEF-8436-C1FD6B06B988}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{51542F4A-5A48-4FEF-8436-C1FD6B06B988}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B47709B6-6210-416A-B0A2-68AFE38562B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B47709B6-6210-416A-B0A2-68AFE38562B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B47709B6-6210-416A-B0A2-68AFE38562B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B47709B6-6210-416A-B0A2-68AFE38562B7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
