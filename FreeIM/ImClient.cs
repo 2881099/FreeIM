@@ -13,6 +13,7 @@ public class ImClient
     protected string[] _servers;
     protected string _redisPrefix;
     protected string _pathMatch;
+    protected JsonSerializerSettings _jsonSerializerSettings;
 
     /// <summary>
     /// 推送消息的事件，可审查推向哪个Server节点
@@ -55,7 +56,7 @@ public class ImClient
     {
         var server = SelectServer(clientId);
         var token = $"{Guid.NewGuid()}{Guid.NewGuid()}{Guid.NewGuid()}{Guid.NewGuid()}".Replace("-", "");
-        _redis.Set($"{_redisPrefix}Token{token}", JsonConvert.SerializeObject((clientId, clientMetaData)), 10);
+        _redis.Set($"{_redisPrefix}Token{token}", JsonConvert.SerializeObject((clientId, clientMetaData), _jsonSerializerSettings), 10);
         return $"ws://{server}{_pathMatch}?token={token}";
     }
 
@@ -77,14 +78,14 @@ public class ImClient
             if (redata.ContainsKey(server) == false) redata.Add(server, new ImSendEventArgs(server, senderClientId, message, receipt));
             redata[server].ReceiveClientId.Add(uid);
         }
-        var messageJson = JsonConvert.SerializeObject(message);
+        var messageJson = JsonConvert.SerializeObject(message, _jsonSerializerSettings);
         using (var pipe = _redis.StartPipe())
         {
             foreach (var sendArgs in redata.Values)
             {
                 OnSend?.Invoke(this, sendArgs);
                 pipe.Publish($"{_redisPrefix}Server{sendArgs.Server}",
-                    JsonConvert.SerializeObject((senderClientId, sendArgs.ReceiveClientId, messageJson, sendArgs.Receipt)));
+                    JsonConvert.SerializeObject((senderClientId, sendArgs.ReceiveClientId, messageJson, sendArgs.Receipt), _jsonSerializerSettings));
             }
             pipe.EndPipe();
         }
@@ -299,13 +300,13 @@ public class ImClient
     public void SendChanMessage(long senderClientId, string chan, object message)
     {
         var sendArgs = _servers.Select(server => new ImSendEventArgs(server, senderClientId, message, false) { Chan = chan }).ToArray();
-        var messageJson = JsonConvert.SerializeObject(message);
+        var messageJson = JsonConvert.SerializeObject(message, _jsonSerializerSettings);
         using (var pipe = _redis.StartPipe())
         {
             foreach (var arg in sendArgs)
             {
                 OnSend?.Invoke(this, arg);
-                pipe.Publish($"{_redisPrefix}Server{arg.Server}", $"__FreeIM__(ChanMessage){JsonConvert.SerializeObject((senderClientId, chan, messageJson))}");
+                pipe.Publish($"{_redisPrefix}Server{arg.Server}", $"__FreeIM__(ChanMessage){JsonConvert.SerializeObject((senderClientId, chan, messageJson), _jsonSerializerSettings)}");
             }
             pipe.EndPipe();
         }

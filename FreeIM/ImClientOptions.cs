@@ -1,4 +1,5 @@
 ﻿using FreeRedis;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
@@ -19,6 +20,10 @@ public class ImClientOptions
     /// websocket请求的路径，默认值：/ws
     /// </summary>
     public string PathMatch { get; set; } = "/ws";
+    /// <summary>
+    /// Json 序列化设置
+    /// </summary>
+    public JsonSerializerSettings JsonSerializerSettings { get;set;}
 }
 
 public class ImSendEventArgs : EventArgs
