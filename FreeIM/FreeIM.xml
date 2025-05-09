@@ -165,6 +165,11 @@
             websocket请求的路径，默认值：/ws
             </summary>
         </member>
+        <member name="P:ImClientOptions.JsonSerializerSettings">
+            <summary>
+            Json 序列化设置
+            </summary>
+        </member>
         <member name="P:ImSendEventArgs.SenderClientId">
             <summary>
             发送者的客户端id
@@ -318,24 +323,6 @@
             发送广播消息
             </summary>
             <param name="message">消息</param>
-        </member>
-        <member name="M:FreeImServerExtenssions.UseFreeImServer(Microsoft.AspNetCore.Builder.IApplicationBuilder,ImServerOptions)">
-            <summary>
-            启用 ImServer 服务端
-            </summary>
-            <param name="app"></param>
-            <param name="options"></param>
-            <returns></returns>
-        </member>
-        <member name="T:ImServerOptions">
-            <summary>
-            im 核心类实现的配置所需
-            </summary>
-        </member>
-        <member name="P:ImServerOptions.Server">
-            <summary>
-            设置服务名称，它应该是 servers 内的一个
-            </summary>
         </member>
     </members>
 </doc>

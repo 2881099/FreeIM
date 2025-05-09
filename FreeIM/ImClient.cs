@@ -32,6 +32,7 @@ public class ImClient
         _servers = options.Servers;
         _redisPrefix = $"im_v2{options.PathMatch.Replace('/', '_')}";
         _pathMatch = options.PathMatch ?? "/ws";
+        _jsonSerializerSettings = options.JsonSerializerSettings;
     }
 
     /// <summary>
