@@ -15,6 +15,14 @@ FreeIM 使用 websocket 协议实现简易、高性能（单机支持5万+连接
 
 > dotnet add package FreeIM
 
+## 定制服务
+
+- 前端：Flutter、uniapp
+- 后端：.NET10 + Redis + MySql + Clickhouse + Kafka (高性能、万人群、群直播）
+- 功能：好友、群、签到、红包、直播、语聊、后台管理系统、系统推送
+- 配置：会员等级、谁不能删除谁、谁能领红包等等
+- 价格：根据功能谈价
+
 ## ImServer 服务端
 
 ```csharp
