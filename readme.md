@@ -83,15 +83,10 @@ public void Configure(IApplicationBuilder app)
 - 配置：会员等级、谁不能删除谁、谁能领红包等等
 - 价格：根据功能谈价
 
-<img width="391" height="844" alt="image" src="https://github.com/user-attachments/assets/309b67ce-d15c-47ca-b9b0-d26304245a18" />
-
-<img width="392" height="843" alt="image" src="https://github.com/user-attachments/assets/46149156-c2bb-4a37-b22c-339aa9cab28c" />
-
-<img width="392" height="843" alt="image" src="https://github.com/user-attachments/assets/d46bd19d-92ff-4ee0-9143-72070c815597" />
-
-<img width="392" height="843" alt="image" src="https://github.com/user-attachments/assets/bc39310e-e2c2-4414-9c62-f36681f368ff" />
-
-<img width="392" height="843" alt="image" src="https://github.com/user-attachments/assets/a5a8cd5c-c04e-44e6-af98-b84eda7f9afb" />
+| <img width="391" height="844" src="https://github.com/user-attachments/assets/309b67ce-d15c-47ca-b9b0-d26304245a18" /> | <img width="392" height="843" src="https://github.com/user-attachments/assets/46149156-c2bb-4a37-b22c-339aa9cab28c" /> |
+| -- | -- |
+| <img width="389" height="844" src="https://github.com/user-attachments/assets/ad19962f-7e9c-46da-88cc-79548f37ee09" /> | <img width="390" height="845" src="https://github.com/user-attachments/assets/f9581338-fe92-41c6-ad72-568d5f508876" /> |
+| <img width="387" height="844" src="https://github.com/user-attachments/assets/46f5f9ad-f53f-4b47-8bad-23cec5081704" /> | <img width="387" height="844" src="https://github.com/user-attachments/assets/aa0b33af-c655-44bd-b8a5-d7fedefcefaa" /> |
 
 <img width="1250" height="1191" alt="image" src="https://github.com/user-attachments/assets/75fb9117-c922-4e6e-99dc-27e9c36fa99d" />
 
