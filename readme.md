@@ -15,14 +15,6 @@ FreeIM 使用 websocket 协议实现简易、高性能（单机支持5万+连接
 
 > dotnet add package FreeIM
 
-## 定制服务
-
-- 前端：Flutter、uniapp
-- 后端：.NET10 + Redis + MySql + Clickhouse + Kafka (高性能、万人群、群直播）
-- 功能：好友、群、签到、红包、直播、语聊、后台管理系统、系统推送
-- 配置：会员等级、谁不能删除谁、谁能领红包等等
-- 价格：根据功能谈价
-
 ## ImServer 服务端
 
 ```csharp
@@ -82,6 +74,26 @@ public void Configure(IApplicationBuilder app)
 - 频道适用临时的群聊需求，如聊天室、讨论区；
 
 > ImHelper 支持 .NetFramework 4.5+、.NetStandard 2.0
+
+# 定制服务
+
+- 前端：Flutter、uniapp
+- 后端：.NET10 + Redis + MySql + Clickhouse + Kafka (高性能、万人群、群直播）
+- 功能：好友、群、签到、红包、直播、语聊、后台管理系统、系统推送
+- 配置：会员等级、谁不能删除谁、谁能领红包等等
+- 价格：根据功能谈价
+
+<img width="391" height="844" alt="image" src="https://github.com/user-attachments/assets/309b67ce-d15c-47ca-b9b0-d26304245a18" />
+
+<img width="392" height="843" alt="image" src="https://github.com/user-attachments/assets/46149156-c2bb-4a37-b22c-339aa9cab28c" />
+
+<img width="392" height="843" alt="image" src="https://github.com/user-attachments/assets/d46bd19d-92ff-4ee0-9143-72070c815597" />
+
+<img width="392" height="843" alt="image" src="https://github.com/user-attachments/assets/bc39310e-e2c2-4414-9c62-f36681f368ff" />
+
+<img width="392" height="843" alt="image" src="https://github.com/user-attachments/assets/a5a8cd5c-c04e-44e6-af98-b84eda7f9afb" />
+
+<img width="1250" height="1191" alt="image" src="https://github.com/user-attachments/assets/75fb9117-c922-4e6e-99dc-27e9c36fa99d" />
 
 ## Html5 终端
 
