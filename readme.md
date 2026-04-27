@@ -1,9 +1,8 @@
-﻿# FreeIM v2.0.0
+# FreeIM v3.0.0
 
- - 调整：已将 ClientId Guid 改为 long；
- - 修复：JoinChan/LeaveChan 数量统计问题；
- - 增加：SendBroadcastMessage 广播消息；
- - 优化：SendChanMessage 性能；
+ - **新增**：clientId 支持泛型，可自定义类型（如 long、int、short、byte 等）；
+ - **兼容**：保留非泛型 ImClient/ImHelper 类，确保向后兼容；
+ - **优化**：内部实现泛型化，提升类型安全；
 
 FreeIM 使用 websocket 协议实现简易、高性能（单机支持5万+连接）、集群即时通讯组件，支持点对点通讯、群聊通讯、上线下线事件消息等众多实用性功能。 `ImCore` 已正式改名为 `FreeIM`。
 
@@ -15,29 +14,14 @@ FreeIM 使用 websocket 协议实现简易、高性能（单机支持5万+连接
 
 > dotnet add package FreeIM
 
-## ImServer 服务端
+## 快速开始
+
+### 使用默认配置（long 作为 clientId）
 
 ```csharp
 public void Configure(IApplicationBuilder app)
 {
-    app.UseFreeImServer(new ImServerOptions
-    {
-        Redis = new FreeRedis.RedisClient("127.0.0.1:6379,poolsize=5"),
-        Servers = new[] { "127.0.0.1:6001" }, //集群配置
-        Server = "127.0.0.1:6001"
-    });
-}
-//dotnet run --urls=http://127.0.0.1:6001
-```
-> 一套永远不需要迭代更新的 `ImServer` 服务端，支持 .NET8.0 AOT 发布（C++运行时）。
-
-## WebApi 业务端
-
-```csharp
-public void Configure(IApplicationBuilder app)
-{
-    //...
-
+    // WebApi 业务端
     ImHelper.Initialization(new ImClientOptions
     {
         Redis = new FreeRedis.RedisClient("127.0.0.1:6379,poolsize=5"),
@@ -45,12 +29,56 @@ public void Configure(IApplicationBuilder app)
     });
 
     ImHelper.EventBus(
-        t => Console.WriteLine(t.clientId + "上线了"), 
+        t => Console.WriteLine(t.clientId + "上线了"),
         t => Console.WriteLine(t.clientId + "下线了"));
 }
 ```
 
-| ImHelper方法 | 参数 | 描述 |
+```csharp
+public void Configure(IApplicationBuilder app)
+{
+    // ImServer 服务端
+    app.UseFreeImServer(new ImServerOptions
+    {
+        Redis = new FreeRedis.RedisClient("127.0.0.1:6379,poolsize=5"),
+        Servers = new[] { "127.0.0.1:6001" },
+        Server = "127.0.0.1:6001"
+    });
+}
+//dotnet run --urls=http://127.0.0.1:6001
+```
+
+> 一套永远不需要迭代更新的 `ImServer` 服务端，支持 .NET8.0 AOT 发布（C++运行时）。
+
+### 使用泛型版本（自定义 clientId 类型）
+
+```csharp
+// 使用 int 作为 clientId
+ImHelper<int>.Initialization(new ImClientOptions
+{
+    Redis = new FreeRedis.RedisClient("127.0.0.1:6379,poolsize=5"),
+    Servers = new[] { "127.0.0.1:6001" }
+});
+
+ImHelper<int>.EventBus(
+    t => Console.WriteLine(t.clientId + "上线了"),
+    t => Console.WriteLine(t.clientId + "下线了"));
+```
+
+```csharp
+// 使用 long 作为 clientId（显式指定）
+ImHelper<long>.Initialization(new ImClientOptions
+{
+    Redis = new FreeRedis.RedisClient("127.0.0.1:6379,poolsize=5"),
+    Servers = new[] { "127.0.0.1:6001" }
+});
+```
+
+## API 参考
+
+### ImHelper（兼容版本，使用 long）
+
+| 方法 | 参数 | 描述 |
 | - | - | - |
 | PrevConnectServer | (clientId, string) | 在终端准备连接 websocket 前调用 |
 | SendMessage | (发送者, 接收者, 消息内容, 是否回执) | 发送消息 |
@@ -59,7 +87,9 @@ public void Configure(IApplicationBuilder app)
 | ForceOffline | clientId | 强制下线 |
 | EventBus | (上线委托, 离线委托) | socket上线与下线事件 |
 
-| 频道 | 参数 | 描述 |
+### 频道相关
+
+| 方法 | 参数 | 描述 |
 | - | - | - |
 | JoinChan | (clientId, 频道名) | 加入 |
 | LeaveChan | (clientId, 频道名) | 离开 |
@@ -68,10 +98,26 @@ public void Configure(IApplicationBuilder app)
 | GetChanListByClientId | (clientId) | 获取用户参与的所有频道 |
 | GetChanOnline | (频道名) | 获取频道的在线人数 |
 | SendChanMessage | (clientId, 频道名, 消息内容) | 发送消息，所有在线的用户将收到消息 |
-| SendBroadcastMessage | (clientId, 频道名, 消息内容) | 发送广播消息 |
+| SendBroadcastMessage | (message) | 发送广播消息 |
+
+### ImHelper<TClientId>（泛型版本）
+
+| 方法 | 参数 | 描述 |
+| - | - | - |
+| PrevConnectServer | (clientId, string) | 在终端准备连接 websocket 前调用 |
+| SendMessage | (发送者, 接收者, 消息内容, 是否回执) | 发送消息 |
+| GetClientListByOnline | - | 返回所有在线clientId |
+| HasOnline | clientId | 判断客户端是否在线 |
+| ForceOffline | clientId | 强制下线 |
+| EventBus | (上线委托, 离线委托) | socket上线与下线事件 |
+
+支持的 TClientId 类型：`long`、`int`、`short`、`byte`、`ulong`、`uint`、`ushort`
+
+## clientId 说明
 
 - clientId 应该与用户id相同，或者关联；
 - 频道适用临时的群聊需求，如聊天室、讨论区；
+- 泛型版本允许你使用不同的数值类型作为 clientId，提升类型安全；
 
 > ImHelper 支持 .NetFramework 4.5+、.NetStandard 2.0
 
@@ -168,7 +214,7 @@ FreeIM 强依赖 redis-server 组件功能：
 
 ## 集群分区
 
-单个 `ImServer` 实例支持多少个客户端连接，3万？如果在线用户有10万人，怎么办？？？
+单个 `ImServer` 实例支持多少个客户端连接，3万？如果在线用户有10万人，怎么办？？
 
 部署 4 个 `ImServer`：
 
