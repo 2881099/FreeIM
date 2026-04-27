@@ -474,9 +474,7 @@
             </summary>
             <param name="message">消息</param>
         </member>
-    </members>
-</doc>
-M:FreeImServerExtenssions.UseFreeImServer(Microsoft.AspNetCore.Builder.IApplicationBuilder,ImServerOptions)">
+        <member name="M:FreeImServerExtenssions.UseFreeImServer(Microsoft.AspNetCore.Builder.IApplicationBuilder,ImServerOptions)">
             <summary>
             启用 ImServer 服务端
             </summary>
