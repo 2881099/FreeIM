@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 /// <summary>
-/// im 核心类 ImClient 实现的静态代理类
+/// im 核心类 ImClient 实现的静态代理类（兼容版本，使用 long 作为 clientId）
 /// </summary>
 public static class ImHelper
 {
@@ -48,12 +48,14 @@ public static class ImHelper
     /// <param name="clientId"></param>
     /// <returns></returns>
     public static bool HasOnline(long clientId) => Instance.HasOnline(clientId);
+
     /// <summary>
     /// 判断客户端是否在线（多个）
     /// </summary>
     /// <param name="clientIds"></param>
     /// <returns></returns>
     public static bool[] HasOnline(IEnumerable<long> clientIds) => Instance.HasOnline(clientIds);
+
     /// <summary>
     /// 强制下线
     /// </summary>
@@ -77,24 +79,28 @@ public static class ImHelper
     /// <param name="clientId">客户端id</param>
     /// <param name="chans">群聊频道名</param>
     public static void JoinChan(long clientId, params string[] chans) => Instance.JoinChan(clientId, chans);
+
     /// <summary>
     /// 离开群聊频道
     /// </summary>
     /// <param name="clientId">客户端id</param>
     /// <param name="chans">群聊频道名</param>
     public static void LeaveChan(long clientId, params string[] chans) => Instance.LeaveChan(clientId, chans);
+
     /// <summary>
     /// 离开群聊频道
     /// </summary>
     /// <param name="chan">群聊频道名</param>
     /// <param name="clientIds">客户端id</param>
     public static void LeaveChan(string chan, params long[] clientIds) => Instance.LeaveChan(chan, clientIds);
+
     /// <summary>
     /// 获取群聊频道所有客户端id（测试）
     /// </summary>
     /// <param name="chan">群聊频道名</param>
     /// <returns></returns>
     public static long[] GetChanClientList(string chan) => Instance.GetChanClientList(chan);
+
     /// <summary>
     /// 清理群聊频道的离线客户端（测试）
     /// </summary>
@@ -106,12 +112,14 @@ public static class ImHelper
     /// </summary>
     /// <returns>频道名和在线人数</returns>
     public static IEnumerable<(string chan, long online)> GetChanList() => Instance.GetChanList();
+
     /// <summary>
     /// 获取用户参与的所有群聊频道
     /// </summary>
     /// <param name="clientId">客户端id</param>
     /// <returns></returns>
     public static string[] GetChanListByClientId(long clientId) => Instance.GetChanListByClientId(clientId);
+
     /// <summary>
     /// 获取群聊频道的在线人数
     /// </summary>
@@ -125,7 +133,139 @@ public static class ImHelper
     /// <param name="senderClientId">发送者的客户端id</param>
     /// <param name="chan">群聊频道名</param>
     /// <param name="message">消息</param>
-	public static void SendChanMessage(long senderClientId, string chan, object message) => Instance.SendChanMessage(senderClientId, chan, message);
+    public static void SendChanMessage(long senderClientId, string chan, object message) => Instance.SendChanMessage(senderClientId, chan, message);
+
+    /// <summary>
+    /// 发送广播消息
+    /// </summary>
+    /// <param name="message">消息</param>
+    public static void SendBroadcastMessage(object message) => Instance.SendBroadcastMessage(message);
+    #endregion
+}
+
+/// <summary>
+/// ImHelper 泛型版本（预览版）
+/// </summary>
+/// <typeparam name="TClientId">客户端ID类型，支持 long、int、short、byte 等数值类型</typeparam>
+public static class ImHelper<TClientId>
+    where TClientId : struct, IComparable<TClientId>
+{
+    static ImClient<TClientId> _instance;
+    public static ImClient<TClientId> Instance => _instance ?? throw new Exception("使用前请初始化 ImHelper<TClientId>.Initialization(...);");
+
+    /// <summary>
+    /// 初始化 ImHelper
+    /// </summary>
+    /// <param name="options"></param>
+    public static void Initialization(ImClientOptions options)
+    {
+        _instance = new ImClient<TClientId>(options);
+    }
+
+    /// <summary>
+    /// ImServer 连接前的负载、授权，返回 ws 目标地址，使用该地址连接 websocket 服务端
+    /// </summary>
+    /// <param name="clientId">客户端id</param>
+    /// <param name="clientMetaData">客户端相关信息，比如ip</param>
+    /// <returns>websocket 地址：ws://xxxx/ws?token=xxx</returns>
+    public static string PrevConnectServer(TClientId clientId, string clientMetaData) => Instance.PrevConnectServer(clientId, clientMetaData);
+
+    /// <summary>
+    /// 向指定的多个客户端id发送消息
+    /// </summary>
+    /// <param name="senderClientId">发送者的客户端id</param>
+    /// <param name="receiveClientId">接收者的客户端id</param>
+    /// <param name="message">消息</param>
+    /// <param name="receipt">是否回执</param>
+    public static void SendMessage(TClientId senderClientId, IEnumerable<TClientId> receiveClientId, object message, bool receipt = false) =>
+        Instance.SendMessage(senderClientId, receiveClientId, message, receipt);
+
+    /// <summary>
+    /// 获取所在线客户端id
+    /// </summary>
+    /// <returns></returns>
+    public static IEnumerable<TClientId> GetClientListByOnline() => Instance.GetClientListByOnline();
+
+    /// <summary>
+    /// 判断客户端是否在线
+    /// </summary>
+    /// <param name="clientId"></param>
+    /// <returns></returns>
+    public static bool HasOnline(TClientId clientId) => Instance.HasOnline(clientId);
+
+    /// <summary>
+    /// 判断客户端是否在线（多个）
+    /// </summary>
+    /// <param name="clientIds"></param>
+    /// <returns></returns>
+    public static bool[] HasOnline(IEnumerable<TClientId> clientIds) => Instance.HasOnline(clientIds);
+
+    /// <summary>
+    /// 强制下线
+    /// </summary>
+    /// <param name="clientId"></param>
+    public static void ForceOffline(TClientId clientId) => Instance.ForceOffline(clientId);
+
+    /// <summary>
+    /// 事件订阅
+    /// </summary>
+    /// <param name="online">上线</param>
+    /// <param name="offline">下线</param>
+    public static void EventBus(
+        Action<(TClientId clientId, string clientMetaData)> online,
+        Action<(TClientId clientId, string clientMetaData)> offline) => Instance.EventBus(online, offline);
+
+    #region 群聊频道，每次上线都必须重新加入
+
+    /// <summary>
+    /// 加入群聊频道，每次上线都必须重新加入
+    /// </summary>
+    /// <param name="clientId">客户端id</param>
+    /// <param name="chans">群聊频道名</param>
+    public static void JoinChan(TClientId clientId, params string[] chans) => Instance.JoinChan(clientId, chans);
+
+    /// <summary>
+    /// 离开群聊频道
+    /// </summary>
+    /// <param name="clientId">客户端id</param>
+    /// <param name="chans">群聊频道名</param>
+    public static void LeaveChan(TClientId clientId, params string[] chans) => Instance.LeaveChan(clientId, chans);
+
+    /// <summary>
+    /// 离开群聊频道
+    /// </summary>
+    /// <param name="chan">群聊频道名</param>
+    /// <param name="clientIds">客户端id</param>
+    public static void LeaveChan(string chan, params TClientId[] clientIds) => Instance.LeaveChan(chan, clientIds);
+
+    /// <summary>
+    /// 获取群聊频道所有客户端id（测试）
+    /// </summary>
+    /// <param name="chan">群聊频道名</param>
+    /// <returns></returns>
+    public static TClientId[] GetChanClientList(string chan) => Instance.GetChanClientList(chan);
+
+    /// <summary>
+    /// 清理群聊频道的离线客户端（测试）
+    /// </summary>
+    /// <param name="chan">群聊频道名</param>
+    public static void ClearChanClient(string chan) => Instance.ClearChanClient(chan);
+
+    /// <summary>
+    /// 获取用户参与的所有群聊频道
+    /// </summary>
+    /// <param name="clientId">客户端id</param>
+    /// <returns></returns>
+    public static string[] GetChanListByClientId(TClientId clientId) => Instance.GetChanListByClientId(clientId);
+
+    /// <summary>
+    /// 发送群聊消息，所有在线的用户将收到消息
+    /// </summary>
+    /// <param name="senderClientId">发送者的客户端id</param>
+    /// <param name="chan">群聊频道名</param>
+    /// <param name="message">消息</param>
+    public static void SendChanMessage(TClientId senderClientId, string chan, object message) => Instance.SendChanMessage(senderClientId, chan, message);
+
     /// <summary>
     /// 发送广播消息
     /// </summary>

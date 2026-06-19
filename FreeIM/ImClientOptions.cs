@@ -1,4 +1,4 @@
-﻿using FreeRedis;
+using FreeRedis;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -26,16 +26,20 @@ public class ImClientOptions
     public JsonSerializerSettings JsonSerializerSettings { get;set;}
 }
 
-public class ImSendEventArgs : EventArgs
+/// <summary>
+/// ImSendEventArgs 泛型版本
+/// </summary>
+/// <typeparam name="TClientId">客户端ID类型</typeparam>
+public class ImSendEventArgs<TClientId> : EventArgs
 {
     /// <summary>
     /// 发送者的客户端id
     /// </summary>
-    public long SenderClientId { get; }
+    public TClientId SenderClientId { get; }
     /// <summary>
     /// 接收者的客户端id
     /// </summary>
-    public List<long> ReceiveClientId { get; } = new List<long>();
+    public List<TClientId> ReceiveClientId { get; } = new List<TClientId>();
     public string Chan { get; internal set; }
     /// <summary>
     /// imServer 服务器节点
@@ -50,11 +54,20 @@ public class ImSendEventArgs : EventArgs
     /// </summary>
     public bool Receipt { get; }
 
-    internal ImSendEventArgs(string server, long senderClientId, object message, bool receipt = false)
+    internal ImSendEventArgs(string server, TClientId senderClientId, object message, bool receipt = false)
     {
         this.Server = server;
         this.SenderClientId = senderClientId;
         this.Message = message;
         this.Receipt = receipt;
     }
+}
+
+/// <summary>
+/// 兼容旧版本的 ImSendEventArgs（使用 long 作为 clientId）
+/// </summary>
+public class ImSendEventArgs : ImSendEventArgs<long>
+{
+    internal ImSendEventArgs(string server, long senderClientId, object message, bool receipt = false)
+        : base(server, senderClientId, message, receipt) { }
 }
