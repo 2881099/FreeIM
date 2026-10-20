@@ -106,7 +106,6 @@
                 },
                 onmessage: function (msg) {
                     var _self = this;
-                    msg = JSON.parse(msg);
                     if (msg.type == 'chanmsg') { //群聊天消息
                         _self.msgs.push(msg);
                     }
